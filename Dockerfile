@@ -1,31 +1,29 @@
-# Dockerfile
 FROM php:8.2-apache
 
-# Instalar dependencias necesarias para MySQL, PostgreSQL y herramientas comunes
+# Instalar dependencias necesarias para PostgreSQL
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    unzip \
-    git \
     libpq-dev \
-    pkg-config \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql
+    git \
+    unzip \
+    libzip-dev \
+    && docker-php-ext-install pdo pdo_pgsql
 
-# Habilitar mod_rewrite si usas rutas amigables
+# Habilitar mod_rewrite
 RUN a2enmod rewrite
 
-# Copiar entrypoint
-COPY Docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Copiar proyecto
+# Copiar tu proyecto
 COPY . /var/www/html/
 
-# Permisos opcionales
+# Permisos
 RUN chown -R www-data:www-data /var/www/html
 
-# Puerto para Render
-EXPOSE 3000
+# Render asigna un puerto en la variable env $PORT
+ENV PORT=10000
 
-# Ejecutar entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Cambiar Apache para que use el puerto proporcionado por Render
+RUN sed -i "s/80/\${PORT}/" /etc/apache2/ports.conf
+RUN sed -i "s/:80/:${PORT}/" /etc/apache2/sites-enabled/000-default.conf
+
+EXPOSE ${PORT}
+
 CMD ["apache2-foreground"]
