@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: plaza-movil-php
+    env: docker
+    plan: starter
+    repo: https://github.com/<tu-usuario>/<tu-repo>
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
