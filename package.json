@@ -1,0 +1,27 @@
+{
+  "name": "plaza-movil-definitivo",
+  "version": "1.0.0",
+  "description": "En el siguiente proyecto, veran todo lo relacionado al maquetado de Plaza Movil.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SetMamaqlo/Plaza-Movil-Definitivo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SetMamaqlo/Plaza-Movil-Definitivo/issues"
+  },
+  "homepage": "https://github.com/SetMamaqlo/Plaza-Movil-Definitivo#readme",
+  "dependencies": {
+    "serve": "^14.2.5"
+  }
+}
