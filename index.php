@@ -1,5 +1,4 @@
 <?php
-echo "OK desde Railway";
 require_once __DIR__ . '/config/app.php';
 // index.php (corregido)
 
@@ -9,9 +8,9 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Cargar conexión a la base de datos ANTES de usar $pdo
-require_once __DIR__ . '/config/conexion.php';
+require_once __DIR__ . '/config/database.php';
 
-// Verificar login (si esto debe estar aquí)
+// Verificar login
 $id_rol = $_SESSION['user_id_rol'] ?? null;
 if (!isset($_SESSION['user_id_rol'])) {
     header("Location: " . base_url("view/login.php"));

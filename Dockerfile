@@ -23,11 +23,9 @@ COPY . /var/www/html/
 # Permisos opcionales
 RUN chown -R www-data:www-data /var/www/html
 
-# Puerto por defecto — Render usa su propia variable $PORT
-ENV PORT=10000
+# Puerto para Render
+EXPOSE 3000
 
 # Ejecutar entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["apache2-foreground"]
-
-EXPOSE 80
