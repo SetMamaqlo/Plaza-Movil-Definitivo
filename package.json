@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "serve ."
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "homepage": "https://github.com/SetMamaqlo/Plaza-Movil-Definitivo#readme",
   "dependencies": {
     "serve": "^14.2.5"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
