@@ -1,29 +1,37 @@
+# Imagen base con Apache
 FROM php:8.2-apache
 
-# Instalar dependencias necesarias para PostgreSQL
+# Instalar dependencias necesarias
 RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    git \
-    unzip \
     libzip-dev \
-    && docker-php-ext-install pdo pdo_pgsql
+    unzip \
+    git \
+    libpq-dev \
+    libonig-dev \
+    pkg-config \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql
 
-# Habilitar mod_rewrite
+# Activar mod_rewrite
 RUN a2enmod rewrite
 
-# Copiar tu proyecto
+# Puerto por defecto (Render lo reemplaza usando el entrypoint)
+ENV PORT=10000
+
+# Copiar entrypoint
+COPY Docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Copiar el código del proyecto
 COPY . /var/www/html/
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html
 
-# Render asigna un puerto en la variable env $PORT
-ENV PORT=10000
-
-# Cambiar Apache para que use el puerto proporcionado por Render
-RUN sed -i "s/80/\${PORT}/" /etc/apache2/ports.conf
-RUN sed -i "s/:80/:${PORT}/" /etc/apache2/sites-enabled/000-default.conf
-
+# Exponer el puerto dinámico
 EXPOSE ${PORT}
 
+# Usar el entrypoint personalizado
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Arrancar Apache
 CMD ["apache2-foreground"]
