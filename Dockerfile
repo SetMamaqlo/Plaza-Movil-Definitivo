@@ -1,40 +1,33 @@
 # Dockerfile
 FROM php:8.2-apache
 
-# Instala extensiones comunes si las necesitas (PDO_MYSQL ejemplo)
-RUN apt-get update && \
-    apt-get install -y libzip-dev unzip git && \
-    docker-php-ext-install pdo pdo_mysql
+# Instalar dependencias necesarias para MySQL, PostgreSQL y herramientas comunes
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    unzip \
+    git \
+    libpq-dev \
+    pkg-config \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql pgsql
 
-# Habilita mod_rewrite (si usas rutas amigables)
+# Habilitar mod_rewrite si usas rutas amigables
 RUN a2enmod rewrite
 
-# Copiar el entrypoint (antes de copiar todo para que no invalides cache si cambias código)
+# Copiar entrypoint
 COPY Docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Copia el código al contenedor
-COPY . /var/www/html/
-
-# Ajusta permisos (opcional)
-RUN chown -R www-data:www-data /var/www/html
-
-# Puerto por defecto — lo dejamos para que el entrypoint lo remapee si Render establece $PORT
-ENV PORT=10000
-
-# Ejecutar entrypoint (reemplaza el puerto en config Apache y arranca)
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["apache2-foreground"]
-
-FROM php:8.2-apache
-
-# Extensiones necesarias
-RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 # Copiar proyecto
 COPY . /var/www/html/
 
-# Permisos
+# Permisos opcionales
 RUN chown -R www-data:www-data /var/www/html
+
+# Puerto por defecto — Render usa su propia variable $PORT
+ENV PORT=10000
+
+# Ejecutar entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["apache2-foreground"]
 
 EXPOSE 80
