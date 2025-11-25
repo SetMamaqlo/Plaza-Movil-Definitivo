@@ -1,7 +1,6 @@
 <?php
-require_once '../config/app.php';
 require_once '../model/usermodel.php';
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 // Manejo de logout
 if (
