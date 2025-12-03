@@ -3,7 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once __DIR__. '/config/conexion.php';
+require_once __DIR__. '/config/database.php';
 require_once __DIR__. '/model/carrito_model.php';
 require_once __DIR__.'/model/detalle_carrito_model.php';
 

@@ -1,6 +1,5 @@
 <?php
-// Asegúrate de que la variable de conexión a la base de datos sea accesible
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 // Si el error de "Undefined variable $pdo" persiste,
 // la siguiente línea podría solucionarlo, haciendo la variable globalmente accesible.

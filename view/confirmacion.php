@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 // Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {

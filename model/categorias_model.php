@@ -1,6 +1,6 @@
 <?php
 // filepath: c:\xampp\htdocs\Plaza_Movil\model\categorias_model.php
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 class CategoriasModel
 {

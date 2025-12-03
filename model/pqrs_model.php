@@ -1,5 +1,5 @@
 <?php
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 class PQRSModel {
     public static function obtenerPorUsuario($id_usuario) {

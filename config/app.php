@@ -52,7 +52,7 @@ if (!defined('APP_ENV_LOADED')) {
 
 // Definir BASE_URL para construir rutas portables
 if (!defined('BASE_URL')) {
-    $rawBase = env('BASE_URL', 'http://pruevacodex-production.up.railway.app/');
+    $rawBase = env('BASE_URL', 'http://localhost/Plaza-Movil-Definitivo/');
     $normalized = rtrim($rawBase, '/');
     define('BASE_URL', $normalized);
 }

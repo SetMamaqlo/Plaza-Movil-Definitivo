@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 // Asegurarse de que $id_rol sea un entero para evitar problemas de comparación estricta
 $id_rol = isset($_SESSION['user_id_rol']) ? (int) $_SESSION['user_id_rol'] : null;

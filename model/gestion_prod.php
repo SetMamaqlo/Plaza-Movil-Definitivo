@@ -1,6 +1,6 @@
 <?php
 // filepath: c:\xampp\htdocs\Plaza_Movil\model\gestion_prod.php
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 class ProductosModel
 {

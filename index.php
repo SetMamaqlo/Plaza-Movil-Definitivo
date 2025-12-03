@@ -1,450 +1,280 @@
 <?php
 require_once __DIR__ . '/config/app.php';
-// index.php (corregido)
-
-// Iniciar sesión solo si aún no existe
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Cargar conexión a la base de datos ANTES de usar $pdo
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/config/database.php';
 
-// Verificar login
-$id_rol = $_SESSION['user_id_rol'] ?? null;
 if (!isset($_SESSION['user_id_rol'])) {
     header("Location: " . base_url("view/login.php"));
     exit;
 }
 
-// Leer id_categoria de GET y asegurarse de que sea entero
-$id_categoria = isset($_GET['id_categoria']) ? (int) $_GET['id_categoria'] : null;
-
-// Parámetros de búsqueda
-$busqueda = $_GET['busqueda'] ?? '';
+$id_categoria   = isset($_GET['id_categoria']) ? (int) $_GET['id_categoria'] : null;
+$busqueda       = $_GET['busqueda'] ?? '';
 $categoria_filtro = $_GET['categoria_filtro'] ?? '';
-$precio_min = $_GET['precio_min'] ?? '';
-$precio_max = $_GET['precio_max'] ?? '';
+$precio_min     = $_GET['precio_min'] ?? '';
+$precio_max     = $_GET['precio_max'] ?? '';
 
 try {
-    // Construir consulta base con filtros
     $sql = "SELECT p.*, u.nombre AS unidad, c.nombre AS categoria_nombre
             FROM productos p
             LEFT JOIN unidades_de_medida u ON p.id_unidad = u.id_unidad
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
             WHERE 1=1";
-    
     $params = [];
-    
-    // Filtro por categoría específica (si se selecciona desde el menú)
+
     if ($id_categoria) {
         $sql .= " AND p.id_categoria = ?";
         $params[] = $id_categoria;
-        
-        // Traer el nombre de la categoría seleccionada
         $catStmt = $pdo->prepare("SELECT nombre FROM categoria WHERE id_categoria = ?");
         $catStmt->execute([$id_categoria]);
         $categoriaSeleccionada = $catStmt->fetchColumn();
     }
-    
-    // Filtro de búsqueda por texto
     if (!empty($busqueda)) {
         $sql .= " AND (p.nombre LIKE ? OR p.descripcion LIKE ?)";
         $params[] = "%$busqueda%";
         $params[] = "%$busqueda%";
     }
-    
-    // Filtro por categoría desde el filtro de búsqueda
     if (!empty($categoria_filtro)) {
         $sql .= " AND p.id_categoria = ?";
         $params[] = $categoria_filtro;
     }
-    
-    // Filtro por precio mínimo
     if (!empty($precio_min)) {
         $sql .= " AND p.precio_unitario >= ?";
         $params[] = $precio_min;
     }
-    
-    // Filtro por precio máximo
     if (!empty($precio_max)) {
         $sql .= " AND p.precio_unitario <= ?";
         $params[] = $precio_max;
     }
-    
+
     $sql .= " ORDER BY p.fecha_publicacion DESC";
-    
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
-
 } catch (PDOException $e) {
-    // Manejo sencillo del error: log y mostrar mensaje mínimo
     error_log("Error BD en index.php: " . $e->getMessage());
     die("Error al cargar los productos. Revisa el log del servidor.");
 }
 
-// Consulta para obtener el promedio de estrellas de cada producto
 $promedios = [];
 $promStmt = $pdo->query("SELECT id_producto, AVG(estrellas) as promedio FROM producto_resenas GROUP BY id_producto");
 while ($row = $promStmt->fetch(PDO::FETCH_ASSOC)) {
     $promedios[$row['id_producto']] = $row['promedio'];
 }
-
-// Obtener categorías para el filtro
 $categoriasFiltro = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDER BY nombre ASC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
-    <!-- Menu -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina Principal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url('css/styles.css') ?>">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .producto-animate {
-            opacity: 0;
-            transform: translateY(30px) scale(0.97);
-            animation: productoFadeIn 0.7s cubic-bezier(.4,0,.2,1) forwards;
-        }
-        @keyframes productoFadeIn {
-            to {
-                opacity: 1;
-                transform: none;
-            }
-        }
-        .search-box {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        .filter-section {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .results-count {
-            background: #198754;
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-    </style>
+    <title>Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="<?= base_url('css/styles.css') ?>"><!-- opcional si necesitas estilos propios -->
 </head>
-
-<body>
-    <!-- Navbar -->
+<body class="bg-slate-50 text-slate-900">
     <?php include __DIR__ . '/navbar.php'; ?>
 
-    <!-- Sección de bienvenida -->
-    <section class="container welcome-section mt-4 mb-0">
-        <span class="welcome-icon"><i class="bi bi-shop-window"></i></span>
-        <div>
-             <div class="welcome-title">Bienvenido a Plaza Móvil</div>
-            <div class="welcome-title"></div>
-            <div class="welcome-desc">
-                Descubre los mejores productos frescos del campo, frutas y verduras seleccionadas para ti.<br>
-                Explora una inumerable cantidad de productos agricolas, fresco y de buena calidad.
-                <br>
-                <br>
+    <!-- Hero -->
+    <section class="relative isolate overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-700 text-white">
+        <div class="absolute inset-0 opacity-20 mix-blend-overlay bg-[radial-gradient(circle_at_20%_20%,white,transparent_35%),radial-gradient(circle_at_80%_0,white,transparent_25%)]"></div>
+        <div class="mx-auto max-w-6xl px-6 py-14 lg:flex lg:items-center lg:justify-between lg:gap-10">
+            <div class="relative z-10 max-w-2xl space-y-4">
+                <p class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1 text-sm font-semibold ring-1 ring-white/30">Plaza Móvil · Agro Mercado</p>
+                <h1 class="text-4xl font-bold leading-tight sm:text-5xl">
+                    Productos frescos directo del campo
+                </h1>
+                <p class="text-lg text-emerald-50">
+                    Explora frutas, verduras y más, con filtros rápidos y tarjetas limpias. Encuentra lo que necesitas en segundos.
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <span class="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold ring-1 ring-white/20">Envíos locales</span>
+                    <span class="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold ring-1 ring-white/20">Productores verificados</span>
+                    <span class="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold ring-1 ring-white/20">Pagos seguros</span>
+                </div>
+            </div>
+            <div class="relative z-10 mt-10 lg:mt-0">
+                <div class="w-full max-w-md rounded-2xl bg-white/10 p-6 shadow-2xl ring-1 ring-white/30 backdrop-blur">
+                    <p class="text-sm font-semibold text-emerald-50 mb-3">Productos publicados</p>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/25">
+                            <p class="text-2xl font-bold"><?= $stmt->rowCount(); ?></p>
+                            <p class="text-emerald-50">Total activos</p>
+                        </div>
+                        <div class="rounded-xl bg-white/10 px-4 py-3 ring-1 ring-white/25">
+                            <p class="text-2xl font-bold"><?= count($categoriasFiltro); ?></p>
+                            <p class="text-emerald-50">Categorías</p>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-xs text-emerald-50/80">Refresca la página para ver nuevas publicaciones recientes.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Carrousel -->
-    <div id="carouselExampleCaptions" class="carousel slide mb-4 custom-carousel" data-bs-ride="carousel"
-        data-bs-interval="3000">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="img/carousel1.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                    <h5>LAS MEJORES VERDURAS</h5>
-                    <p>Encuentra aqui, las mejores verduras del mercado.</p>
+    <!-- Buscador y filtros -->
+    <section class="mx-auto max-w-6xl px-6 -mt-10">
+        <div class="rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-100">
+            <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-12">
+                <div class="md:col-span-5">
+                    <label class="text-sm font-semibold text-slate-600">Buscar</label>
+                    <div class="relative mt-2">
+                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.65 5.65a7.5 7.5 0 0 0 11 11Z" /></svg>
+                        </span>
+                        <input name="busqueda" value="<?= htmlspecialchars($busqueda); ?>" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="Nombre o descripción..." />
+                    </div>
                 </div>
-            </div>
-            <div class="carousel-item">
-                <img src="img/carousel2.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                    <h5>LO MEJOR DEL CAMPO</h5>
-                    <p>Solo los mejores productos para nuestros usuarios.</p>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <img src="img/carousel3.jpg" class="d-block w-100 h-100" style="object-fit: cover;" alt="...">
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
-                    <h5>LAS FRUTAS MAS FRESCAS</h5>
-                    <p>Mira las ultimas publicaciones en frutas.</p>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
 
-    <hr class="section-divider">
-
-    <!-- Barra de búsqueda y filtros -->
-    <section class="container mt-5">
-        <div class="search-box">
-            <h3 class="text-center mb-4 fw-bold">
-                <i class="bi bi-search me-2"></i>Buscar Productos
-            </h3>
-            
-            <form method="GET" class="row g-3">
-                <div class="col-12 position-relative">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" class="form-control ps-5" name="busqueda" placeholder="Buscar productos por nombre o descripción..." 
-                           value="<?php echo htmlspecialchars($busqueda); ?>">
-                </div>
-                
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold"><i class="bi bi-tag me-1"></i>Categoría</label>
-                    <select class="form-select" name="categoria_filtro">
-                        <option value="">Todas las categorías</option>
+                <div class="md:col-span-3">
+                    <label class="text-sm font-semibold text-slate-600">Categoría</label>
+                    <select name="categoria_filtro" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100">
+                        <option value="">Todas</option>
                         <?php foreach ($categoriasFiltro as $cat): ?>
-                            <option value="<?php echo $cat['id_categoria']; ?>" 
-                                <?php echo ($categoria_filtro == $cat['id_categoria']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            <option value="<?= $cat['id_categoria']; ?>" <?= $categoria_filtro == $cat['id_categoria'] ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($cat['nombre']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold"><i class="bi bi-currency-dollar me-1"></i>Precio Mínimo</label>
-                    <input type="number" class="form-control" name="precio_min" placeholder="0" 
-                           value="<?php echo htmlspecialchars($precio_min); ?>" min="0" step="0.01">
+
+                <div class="md:col-span-2">
+                    <label class="text-sm font-semibold text-slate-600">Precio mín.</label>
+                    <input type="number" name="precio_min" min="0" step="0.01" value="<?= htmlspecialchars($precio_min); ?>" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="0" />
                 </div>
-                
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold"><i class="bi bi-currency-dollar me-1"></i>Precio Máximo</label>
-                    <input type="number" class="form-control" name="precio_max" placeholder="100000" 
-                           value="<?php echo htmlspecialchars($precio_max); ?>" min="0" step="0.01">
+
+                <div class="md:col-span-2">
+                    <label class="text-sm font-semibold text-slate-600">Precio máx.</label>
+                    <input type="number" name="precio_max" min="0" step="0.01" value="<?= htmlspecialchars($precio_max); ?>" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="100000" />
                 </div>
-                
-                <div class="col-12 text-center">
-                    <button type="submit" class="btn btn-success btn-lg me-2">
-                        <i class="bi bi-search me-1"></i>Buscar
+
+                <div class="md:col-span-12 flex flex-wrap items-end justify-between gap-3">
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:-translate-y-0.5 hover:bg-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                        <span>Buscar</span>
                     </button>
-                    <a href="<?= base_url('view/producto_detalle.php?id_producto=' . $producto['id_producto']) ?>"
-                           class="w-100 text-decoration-none text-dark">
-                    </a>
+                    <?php if ($busqueda || $categoria_filtro || $precio_min || $precio_max): ?>
+                        <div class="flex flex-wrap gap-2 text-xs text-slate-500">
+                            <?php if ($busqueda): ?><span class="rounded-full bg-slate-100 px-3 py-1">Búsqueda: "<?= htmlspecialchars($busqueda); ?>"</span><?php endif; ?>
+                            <?php if ($categoria_filtro): ?>
+                                <?php $catNombre = $categoriasFiltro[array_search($categoria_filtro, array_column($categoriasFiltro, 'id_categoria'))]['nombre']; ?>
+                                <span class="rounded-full bg-slate-100 px-3 py-1">Categoría: <?= htmlspecialchars($catNombre); ?></span>
+                            <?php endif; ?>
+                            <?php if ($precio_min): ?><span class="rounded-full bg-slate-100 px-3 py-1">Precio mín: $<?= htmlspecialchars($precio_min); ?></span><?php endif; ?>
+                            <?php if ($precio_max): ?><span class="rounded-full bg-slate-100 px-3 py-1">Precio máx: $<?= htmlspecialchars($precio_max); ?></span><?php endif; ?>
+                            <span class="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700"><?= $stmt->rowCount(); ?> productos</span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </form>
-            
-            <?php if ($busqueda || $categoria_filtro || $precio_min || $precio_max): ?>
-                <div class="filter-section mt-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="mb-0"><i class="bi bi-funnel me-1"></i>Filtros aplicados:</h6>
-                            <small class="text-muted">
-                                <?php
-                                $filtros = [];
-                                if ($busqueda) $filtros[] = "Búsqueda: \"$busqueda\"";
-                                if ($categoria_filtro) {
-                                    $catNombre = $categoriasFiltro[array_search($categoria_filtro, array_column($categoriasFiltro, 'id_categoria'))]['nombre'];
-                                    $filtros[] = "Categoría: $catNombre";
-                                }
-                                if ($precio_min) $filtros[] = "Precio mínimo: $$precio_min";
-                                if ($precio_max) $filtros[] = "Precio máximo: $$precio_max";
-                                echo implode(', ', $filtros);
-                                ?>
-                            </small>
-                        </div>
-                        <span class="results-count">
-                            <i class="bi bi-grid-3x3-gap me-1"></i>
-                            <?php echo $stmt->rowCount(); ?> productos
-                        </span>
-                    </div>
-                </div>
-            <?php endif; ?>
         </div>
     </section>
 
-    <!-- Apartado de productos -->
-    <section class="container mt-5 productos-fondo">
-        <h2 class="text-center mb-4 fw-bold display-6 border-bottom pb-2" style="letter-spacing:1px;">
-            <i class="bi bi-box-seam text-success me-2"></i>
-            <?php echo ($id_categoria && isset($categoriaSeleccionada)) ? "Productos de $categoriaSeleccionada" : "Productos Publicados"; ?>
-        </h2>
-        
+    <!-- Productos -->
+    <section class="mx-auto mt-10 max-w-6xl px-6">
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold">
+                <?= ($id_categoria && isset($categoriaSeleccionada)) ? "Productos de " . htmlspecialchars($categoriaSeleccionada) : "Productos publicados"; ?>
+            </h2>
+        </div>
+
         <?php if ($stmt->rowCount() > 0): ?>
-            <div class="row g-4 justify-content-center">
+            <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 <?php
-                $delay = 0.3;
-                $idx = 0;
+                $delay = 0.08; $idx = 0;
                 while ($producto = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $promedio = isset($promedios[$producto['id_producto']]) ? $promedios[$producto['id_producto']] : 0;
-                    ?>
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
-                        <a href="<?= base_url('view/producto_detalle.php?id_producto=' . $producto['id_producto']) ?>">
-                            class="w-100 text-decoration-none text-dark">
-                            <div class="card h-100 border-0 shadow-sm minimal-card producto-animate"
-                                 style="animation-delay: <?= $delay * $idx ?>s;">
-                                <img src="img/<?php echo htmlspecialchars($producto['foto']); ?>"
-                                    class="card-img-top rounded-top" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
-                                <div class="card-body d-flex flex-column justify-content-between">
-                                    <h5 class="card-title mb-2 fw-semibold text-truncate">
-                                        <?php echo htmlspecialchars($producto['nombre']); ?>
-                                    </h5>
-                                    <!-- Mostrar estrellas -->
-                                    <div class="mb-2">
-                                        <?php
-                                        for ($i = 1; $i <= 5; $i++) {
-                                            echo '<i class="bi bi-star' . ($i <= round($promedio) ? '-fill text-warning' : '') . '"></i>';
-                                        }
-                                        if ($promedio > 0) {
-                                            echo ' <span class="text-muted small">(' . number_format($promedio, 2) . ')</span>';
-                                        }
-                                        ?>
-                                    </div>
-                                    <p class="card-text small text-muted mb-2" style="min-height:48px;">
-                                        <?php echo htmlspecialchars($producto['descripcion']); ?>
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold text-success">
-                                            $<?php echo number_format($producto['precio_unitario']); ?> 
-                                            / <?php echo htmlspecialchars($producto['unidad']); ?>
-                                        </span>
-                                        <small class="text-muted">
-                                            <i class="bi bi-tag"></i> <?php echo htmlspecialchars($producto['categoria_nombre']); ?>
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
+                    $promedio = $promedios[$producto['id_producto']] ?? 0;
+                ?>
+                <a href="<?= base_url('view/producto_detalle.php?id_producto=' . $producto['id_producto']) ?>"
+                   class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-2xl">
+                    <div class="h-40 overflow-hidden bg-slate-100">
+                        <img src="img/<?= htmlspecialchars($producto['foto']); ?>" alt="<?= htmlspecialchars($producto['nombre']); ?>"
+                             class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                     </div>
+                    <div class="flex flex-1 flex-col gap-3 p-4">
+                        <div class="flex items-start justify-between gap-2">
+                            <h3 class="text-base font-semibold text-slate-900 line-clamp-1"><?= htmlspecialchars($producto['nombre']); ?></h3>
+                            <span class="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700"><?= htmlspecialchars($producto['categoria_nombre']); ?></span>
+                        </div>
+                        <p class="text-sm text-slate-600 line-clamp-2"><?= htmlspecialchars($producto['descripcion']); ?></p>
+                        <div class="flex items-center gap-1 text-amber-400">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 <?= $i <= round($promedio) ? 'fill-amber-400' : 'fill-none stroke-amber-300'; ?>" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.48 3.5a.56.56 0 0 1 1.04 0l2.2 5.01c.08.19.26.32.46.34l5.42.43c.48.04.67.64.3.94l-4.13 3.44a.56.56 0 0 0-.18.55l1.27 5.28a.56.56 0 0 1-.84.6l-4.63-2.8a.56.56 0 0 0-.58 0l-4.63 2.8a.56.56 0 0 1-.84-.6l1.27-5.28a.56.56 0 0 0-.18-.55L2.1 10.22a.56.56 0 0 1 .3-.94l5.42-.43c.2-.02.38-.15.46-.34l2.2-5.01Z"/></svg>
+                            <?php endfor; ?>
+                            <?php if ($promedio > 0): ?>
+                                <span class="text-xs font-semibold text-slate-500">(<?= number_format($promedio, 2); ?>)</span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="mt-auto flex items-center justify-between">
+                            <span class="text-lg font-bold text-emerald-600">$<?= number_format($producto['precio_unitario']); ?> / <?= htmlspecialchars($producto['unidad']); ?></span>
+                            <span class="text-xs text-slate-500">Publicado <?= date('d/m', strtotime($producto['fecha_publicacion'])); ?></span>
+                        </div>
+                    </div>
+                </a>
                 <?php $idx++; } ?>
             </div>
         <?php else: ?>
-            <div class="text-center py-5">
-                <i class="bi bi-search display-1 text-muted"></i>
-                <h4 class="text-muted mt-3">No se encontraron productos</h4>
-                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
-                <a href="<?= base_url('index.php') ?>" class="btn btn-success">Ver todos los productos</a>
+            <div class="mt-8 flex flex-col items-center rounded-2xl bg-white p-10 text-center shadow-lg ring-1 ring-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.65 5.65a7.5 7.5 0 0 0 11 11Z" /></svg>
+                <h3 class="mt-4 text-lg font-semibold text-slate-800">No se encontraron productos</h3>
+                <p class="text-sm text-slate-500">Ajusta los filtros e inténtalo de nuevo.</p>
+                <a href="<?= base_url('index.php') ?>" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-emerald-500">Ver todos</a>
             </div>
         <?php endif; ?>
     </section>
 
-    <hr class="section-divider">
-
-    <!-- Apartado de productos por categoría (solo si no hay búsqueda activa) -->
+    <!-- Por categoría -->
     <?php if (!$busqueda && !$categoria_filtro && !$precio_min && !$precio_max): ?>
-    <section class="container mt-5">
-        <h2 class="text-center mb-4 fw-bold display-6 border-bottom pb-2" style="letter-spacing:1px;">
-            <i class="bi bi-tags text-success me-2"></i>Productos por Categoría
-        </h2>
-        <?php
-        // Consulta para obtener las categorías desde la tabla `categoria`
-        $categoriasStmt = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDER BY nombre ASC");
-        $categorias = $categoriasStmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($categorias as $categoria) {
-            $categoriaNombre = htmlspecialchars($categoria['nombre']);
-            $categoriaId = $categoria['id_categoria'];
+    <section class="mx-auto mt-14 max-w-6xl px-6">
+        <h2 class="text-2xl font-bold">Productos por categoría</h2>
+        <div class="mt-6 space-y-10">
+            <?php
+            $categoriasStmt = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDER BY nombre ASC");
+            $categorias = $categoriasStmt->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($categorias as $categoria):
+                $categoriaNombre = htmlspecialchars($categoria['nombre']);
+                $categoriaId = $categoria['id_categoria'];
+                $productosStmt = $pdo->prepare("SELECT p.*, u.nombre AS unidad FROM productos p LEFT JOIN unidades_de_medida u ON p.id_unidad = u.id_unidad WHERE p.id_categoria = ? ORDER BY p.fecha_publicacion DESC");
+                $productosStmt->execute([$categoriaId]);
             ?>
-            <div class="mb-5">
-                <h3 class="text-success border-start border-4 ps-3 mb-4" style="font-weight:600; letter-spacing:0.5px;">
-                    <i class="bi bi-tag-fill me-2"></i><?php echo $categoriaNombre; ?>
-                </h3>
-                <div class="row g-4 justify-content-center">
-                    <?php
-                    // Consulta para obtener los productos de la categoría actual
-                    $productosStmt = $pdo->prepare("SELECT p.*, u.nombre AS unidad
-                        FROM productos p
-                        LEFT JOIN unidades_de_medida u ON p.id_unidad = u.id_unidad
-                        WHERE p.id_categoria = ?
-                        ORDER BY p.fecha_publicacion DESC
-                    ");
-                    $productosStmt->execute([$categoriaId]);
-                    $delay = 0.1;
-                    $idx = 0;
-                    while ($producto = $productosStmt->fetch(PDO::FETCH_ASSOC)) {
-                        $promedio = isset($promedios[$producto['id_producto']]) ? $promedios[$producto['id_producto']] : 0;
-                        ?>
-                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch">
-                            <a href="<?= base_url('view/producto_detalle.php?id_producto=' . $producto['id_producto']) ?>"
-                                class="w-100 text-decoration-none text-dark">
-                                <div class="card h-100 border-0 shadow-sm minimal-card producto-animate"
-                                     style="animation-delay: <?= $delay * $idx ?>s;">
-                                    <img src="img/<?php echo htmlspecialchars($producto['foto']); ?>"
-                                        class="card-img-top rounded-top"
-                                        alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
-                                    <div class="card-body d-flex flex-column justify-content-between">
-                                        <h5 class="card-title mb-2 fw-semibold text-truncate">
-                                            <?php echo htmlspecialchars($producto['nombre']); ?></h5>
-                                        <!-- Mostrar estrellas -->
-                                        <div class="mb-2">
-                                            <?php
-                                            for ($i = 1; $i <= 5; $i++) {
-                                                echo '<i class="bi bi-star' . ($i <= round($promedio) ? '-fill text-warning' : '') . '"></i>';
-                                            }
-                                            if ($promedio > 0) {
-                                                echo ' <span class="text-muted small">(' . number_format($promedio, 2) . ')</span>';
-                                            }
-                                            ?>
-                                        </div>
-                                        <p class="card-text small text-muted mb-2" style="min-height:48px;">
-                                            <?php echo htmlspecialchars($producto['descripcion']); ?>
-                                        </p>
-                                        <p class="card-text mb-0"><span
-                                                class="fw-bold text-success">$<?php echo number_format($producto['precio_unitario']); ?> 
-                                                 / <?php echo htmlspecialchars($producto['unidad']); ?></span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    <?php $idx++; } ?>
+            <div>
+                <div class="flex items-center gap-3">
+                    <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                    <h3 class="text-xl font-semibold text-slate-900"><?= $categoriaNombre; ?></h3>
                 </div>
-                <hr class="categoria-separator">
+                <div class="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <?php while ($producto = $productosStmt->fetch(PDO::FETCH_ASSOC)): ?>
+                    <?php $promedio = $promedios[$producto['id_producto']] ?? 0; ?>
+                    <a href="<?= base_url('view/producto_detalle.php?id_producto=' . $producto['id_producto']) ?>"
+                       class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-xl">
+                        <div class="h-36 overflow-hidden bg-slate-100">
+                            <img src="img/<?= htmlspecialchars($producto['foto']); ?>" alt="<?= htmlspecialchars($producto['nombre']); ?>" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+                        </div>
+                        <div class="flex flex-1 flex-col gap-2 p-4">
+                            <h4 class="text-base font-semibold text-slate-900 line-clamp-1"><?= htmlspecialchars($producto['nombre']); ?></h4>
+                            <div class="flex items-center gap-1 text-amber-400">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 <?= $i <= round($promedio) ? 'fill-amber-400' : 'fill-none stroke-amber-300'; ?>" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.48 3.5a.56.56 0 0 1 1.04 0l2.2 5.01c.08.19.26.32.46.34l5.42.43c.48.04.67.64.3.94l-4.13 3.44a.56.56 0 0 0-.18.55l1.27 5.28a.56.56 0 0 1-.84.6l-4.63-2.8a.56.56 0 0 0-.58 0l-4.63 2.8a.56.56 0 0 1-.84-.6l1.27-5.28a.56.56 0 0 0-.18-.55L2.1 10.22a.56.56 0 0 1 .3-.94l5.42-.43c.2-.02.38-.15.46-.34l2.2-5.01Z"/></svg>
+                                <?php endfor; ?>
+                                <?php if ($promedio > 0): ?>
+                                    <span class="text-xs font-semibold text-slate-500">(<?= number_format($promedio, 2); ?>)</span>
+                                <?php endif; ?>
+                            </div>
+                            <p class="text-sm text-slate-600 line-clamp-2"><?= htmlspecialchars($producto['descripcion']); ?></p>
+                            <div class="mt-auto text-sm font-semibold text-emerald-600">$<?= number_format($producto['precio_unitario']); ?> / <?= htmlspecialchars($producto['unidad']); ?></div>
+                        </div>
+                    </a>
+                    <?php endwhile; ?>
+                </div>
             </div>
-        <?php } ?>
+            <?php endforeach; ?>
+        </div>
     </section>
     <?php endif; ?>
 
-    </div>
-
-    <div class="container mt-5"></div>
-
-    <footer class="text-center py-3">
-        <p class="mb-0">&copy; 2025 Plaza Móvil. Todos los derechos reservados.</p>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
     </footer>
 
     <script>
-        // Función para limpiar filtros individuales
         function limpiarFiltro(tipo) {
             const url = new URL(window.location.href);
             url.searchParams.delete(tipo);

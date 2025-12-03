@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 require_once '../controller/medidas_controller.php';
 require_once '../controller/gestion_categorias.php';
 

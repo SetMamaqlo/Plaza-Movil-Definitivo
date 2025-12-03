@@ -1,6 +1,6 @@
 <?php
 require_once '../model/PerfilModel.php';
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
 session_start();
 if (!isset($_SESSION['user_id_usuario'])) {

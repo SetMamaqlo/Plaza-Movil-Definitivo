@@ -8,23 +8,35 @@ $dotenv->load();
 $dbUrl = getenv("DB_URL");
 
 if (!$dbUrl) {
-    die("Error: Variable de entorno DB_URL no configurada");
+    die("Error: Variable de entorno DB_URL no configurada en .env");
 }
 
-// Convertir URL de PostgreSQL a DSN compatible con PDO
-$dsn = str_replace("postgresql://", "pgsql:host=", $dbUrl);
-$dsn = preg_replace("/:(\d+)\//", ";port=$1;dbname=", $dsn);
-
 try {
-    $pdo = new PDO($dsn, null, null, [
+    // Parsear URL de conexión
+    $url = parse_url($dbUrl);
+    $driver = $url['scheme']; // 'mysql' o 'postgresql'
+    $host = $url['host'] ?? 'localhost';
+    $port = $url['port'] ?? ($driver === 'mysql' ? 3306 : 5432);
+    $db = ltrim($url['path'], '/');
+    $user = $url['user'] ?? 'root';
+    $pass = $url['pass'] ?? '';
+
+    if ($driver === 'mysql') {
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8mb4";
+    } else {
+        $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+    }
+
+    $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_PERSISTENT => false
     ]);
-    // Descomentar solo para debug
-    // error_log("Conectado a PostgreSQL correctamente");
+
+    error_log("✅ Conectado a $driver correctamente");
+
 } catch (PDOException $e) {
-    error_log("Error de conexión a BD: " . $e->getMessage());
-    die("Error de conexión a la base de datos. Revisa el log del servidor.");
+    error_log("❌ Error de conexión: " . $e->getMessage());
+    die("Error de conexión a la base de datos. Revisa el archivo de log.");
 }
 ?>
