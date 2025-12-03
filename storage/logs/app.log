@@ -7,3 +7,8 @@
 [18-Nov-2025 01:00:28 Europe/Berlin] Error de conexión: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: NO)
 [18-Nov-2025 04:20:46 Europe/Berlin] Error de conexión: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: NO)
 [18-Nov-2025 04:26:29 Europe/Berlin] Error de conexión: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: NO)
+[03-Dec-2025 04:47:31 Europe/Berlin] PHP Fatal error:  Uncaught Error: Class "Dotenv\Dotenv" not found in D:\xampp\htdocs\Plaza-Movil-Definitivo\config\database.php:5
+Stack trace:
+#0 D:\xampp\htdocs\Plaza-Movil-Definitivo\index.php(4): require_once()
+#1 {main}
+  thrown in D:\xampp\htdocs\Plaza-Movil-Definitivo\config\database.php on line 5
