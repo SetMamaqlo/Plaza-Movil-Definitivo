@@ -1,27 +1,36 @@
 <?php
-// usar el loader propio (config/app.php) que ya carga .env y expone helpers si aplica
+// Cargar configuración de .env
 require_once __DIR__ . '/app.php';
 
-// Valores (usando .env/entorno si están, fallback a locales)
-$db_host = getenv('DB_HOST') ?: (defined('DB_HOST') ? DB_HOST : '127.0.0.1');
-$db_port = getenv('DB_PORT') ?: (defined('DB_PORT') ? DB_PORT : '3306');
-$db_name = getenv('DB_DATABASE') ?: (defined('DB_DATABASE') ? DB_DATABASE : 'agro_app'); // <- nombre por defecto
-$db_user = getenv('DB_USERNAME') ?: (defined('DB_USERNAME') ? DB_USERNAME : 'root');
-$db_pass = getenv('DB_PASSWORD') ?: (defined('DB_PASSWORD') ? DB_PASSWORD : '');
+// Obtener credenciales de .env (Railway)
+$db_host = getenv('DB_HOST') ?: '127.0.0.1';
+$db_port = getenv('DB_PORT') ?: '3306';
+$db_name = getenv('DB_DATABASE') ?: 'railway';
+$db_user = getenv('DB_USERNAME') ?: 'root';
+$db_pass = getenv('DB_PASSWORD') ?: '';
 
-// DSN y conexión sencilla
+// Crear DSN para conexión
 $dsn = "mysql:host={$db_host};port={$db_port};dbname={$db_name};charset=utf8mb4";
+
+// Variable global $pdo
 $pdo = null;
 
 try {
     $pdo = new PDO($dsn, $db_user, $db_pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4",
     ]);
-    error_log("✅ Conectado a MySQL: {$db_host}:{$db_port}/{$db_name}");
+    
+    error_log("✅ Conectado a la BD: {$db_host}:{$db_port}/{$db_name}");
+    
 } catch (PDOException $e) {
-    error_log("Error de conexión a BD: " . $e->getMessage());
-    // Dejar $pdo = null para que el resto del código lo detecte y muestre mensaje amigable
+    error_log("❌ Error de conexión a BD: " . $e->getMessage());
     $pdo = null;
+    
+    // Mostrar error amigable solo en desarrollo
+    if (getenv('APP_ENV') === 'development') {
+        echo "Error de conexión: " . htmlspecialchars($e->getMessage());
+    }
 }
 ?>
