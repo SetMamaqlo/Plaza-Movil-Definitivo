@@ -2,6 +2,7 @@
 session_start();
 
 require_once '../config/conexion.php';
+require_once __DIR__ . '/config/session_timeout.php';
 
 if (!isset($_SESSION['user_id_usuario'])) {
     header("Location: login.php");

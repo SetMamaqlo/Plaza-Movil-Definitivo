@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
+
 // Verificar si la sesión ya está iniciada antes de iniciarla
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -12,6 +13,7 @@ if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 3) {
 
 require_once '../config/database.php';
 require_once '../controller/carga_masiva_controller.php';
+require_once __DIR__ . '/config/session_timeout.php';
 ?>
 
 <!DOCTYPE html>

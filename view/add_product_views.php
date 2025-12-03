@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] !== 3) {
 require_once '../config/database.php';
 require_once '../controller/medidas_controller.php';
 require_once '../controller/gestion_categorias.php';
+require_once __DIR__ . '/config/session_timeout.php';
 ?>
 
 <!DOCTYPE html>
