@@ -1,14 +1,11 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
-// filepath: c:\xampp\htdocs\Plaza_Movil\view\gestion_categorias.php
 session_start();
 require_once '../controller/gestion_categorias.php';
 require_once '../model/categorias_model.php';
 
-// Asegurarse de que $id_rol sea un entero para evitar problemas de comparación estricta
 $id_rol = isset($_SESSION['user_id_rol']) ? (int) $_SESSION['user_id_rol'] : null;
 
-// Verificar si el usuario tiene el rol de administrador
 if ($id_rol !== 1) {
     header("Location: ../index.php");
     exit;
@@ -20,129 +17,114 @@ $categorias = $model->obtenerCategorias();
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Categorías</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Gestión de Categorías - Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
-    
 </head>
-
-<body>
-    <!-- Navbar -->
+<body class="bg-slate-50 text-slate-900">
     <?php include '../navbar.php'; ?>
-
-    <!-- Espacio para que el contenido no quede oculto bajo la navbar fija -->
     <div style="height:70px"></div>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Gestión de Categorías</h1>
+    <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Gestión de Categorías</h1>
+                <button type="button" onclick="document.getElementById('crearCategoriaModal').classList.remove('hidden')" 
+                        class="rounded-xl bg-emerald-600 text-white px-6 py-2 font-semibold hover:bg-emerald-500">
+                    <i class="bi bi-plus-circle me-2"></i>Crear Categoría
+                </button>
+            </div>
 
-        <!-- Formulario para agregar una nueva categoría -->
-        <div class="mb-4">
-            <form action="../controller/gestion_categorias.php" method="POST" class="row g-2">
-                <input type="hidden" name="accion" value="agregar">
-                <div class="col-md-4">
-                    <input type="text" name="nombre" class="form-control" placeholder="Nombre de la categoría"
-                        value="<?= htmlspecialchars($_POST['nombre'] ?? '', ENT_QUOTES); ?>" required>
+            <!-- Modal crear categoría -->
+            <div id="crearCategoriaModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur" onclick="if(event.target === this) this.classList.add('hidden')">
+                <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-slate-900">Crear Nueva Categoría</h3>
+                        <button onclick="document.getElementById('crearCategoriaModal').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 text-2xl">&times;</button>
+                    </div>
+                    <form action="../controller/gestion_categorias.php" method="POST" class="space-y-4">
+                        <input type="hidden" name="accion" value="agregar">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre</label>
+                            <input type="text" name="nombre" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
+                            <textarea name="descripcion" rows="3" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"></textarea>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="document.getElementById('crearCategoriaModal').classList.add('hidden')" class="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancelar</button>
+                            <button type="submit" class="flex-1 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Crear</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" name="descripcion" class="form-control" placeholder="Descripción"
-                        value="<?= htmlspecialchars($_POST['descripcion'] ?? '', ENT_QUOTES); ?>" required>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-plus-circle"></i> Agregar
-                    </button>
-                </div>
-            </form>
-        </div>
+            </div>
 
-        <!-- Tabla de categorías -->
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-success">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th class="text-center">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($categorias as $categoria): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($categoria['id_categoria']); ?></td>
-                        <td>
-                            <?= !empty($categoria['nombre']) ? htmlspecialchars($categoria['nombre']) : '<span class="text-danger">Sin nombre</span>'; ?>
-                        </td>
-                        <td>
-                            <?= !empty($categoria['descripcion']) ? htmlspecialchars($categoria['descripcion']) : '<span class="text-danger">Sin descripción</span>'; ?>
-                        </td>
-                        <td class="text-center">
-                            <!-- Botón editar (abre modal) -->
-                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#editarModal<?= $categoria['id_categoria']; ?>">
-                                <i class="bi bi-pencil"></i> Editar
-                            </button>
-
-                            <!-- Formulario eliminar -->
-                            <form action="../controller/gestion_categorias.php" method="POST" class="d-inline">
-                                <input type="hidden" name="accion" value="eliminar">
-                                <input type="hidden" name="id_categoria" value="<?= $categoria['id_categoria']; ?>">
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('¿Seguro que deseas eliminar esta categoría?');">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-
-                    <!-- Modal editar -->
-                    <div class="modal fade" id="editarModal<?= $categoria['id_categoria']; ?>" tabindex="-1"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form action="../controller/gestion_categorias.php" method="POST">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Editar Categoría</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Cerrar"></button>
-                                    </div>
-                                    <div class="modal-body">
+            <!-- Tabla de categorías -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-emerald-50 border-b-2 border-emerald-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold">ID</th>
+                            <th class="px-4 py-3 text-left font-semibold">Nombre</th>
+                            <th class="px-4 py-3 text-left font-semibold">Descripción</th>
+                            <th class="px-4 py-3 text-center font-semibold">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <?php foreach ($categorias as $categoria): ?>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3"><?= htmlspecialchars($categoria['id_categoria']); ?></td>
+                                <td class="px-4 py-3 font-semibold"><?= !empty($categoria['nombre']) ? htmlspecialchars($categoria['nombre']) : '<span class="text-red-600">Sin nombre</span>'; ?></td>
+                                <td class="px-4 py-3"><?= !empty($categoria['descripcion']) ? htmlspecialchars($categoria['descripcion']) : '<span class="text-slate-400 italic">Sin descripción</span>'; ?></td>
+                                <td class="px-4 py-3 text-center space-x-2">
+                                    <button type="button" onclick="document.getElementById('modalEditar<?= $categoria['id_categoria'] ?>').classList.remove('hidden')" 
+                                            class="rounded-lg bg-amber-500 text-white px-3 py-1 text-xs font-semibold hover:bg-amber-600">
+                                        <i class="bi bi-pencil"></i>Editar
+                                    </button>
+                                    <form action="../controller/gestion_categorias.php" method="POST" class="inline">
+                                        <input type="hidden" name="accion" value="eliminar">
+                                        <input type="hidden" name="id_categoria" value="<?= $categoria['id_categoria']; ?>">
+                                        <button type="submit" class="rounded-lg bg-red-600 text-white px-3 py-1 text-xs font-semibold hover:bg-red-700" onclick="return confirm('¿Estás seguro?');">
+                                            <i class="bi bi-trash"></i>Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <!-- Modal editar -->
+                            <div id="modalEditar<?= $categoria['id_categoria'] ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur" onclick="if(event.target === this) this.classList.add('hidden')">
+                                <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                                    <h3 class="text-xl font-bold text-slate-900 mb-4">Editar Categoría</h3>
+                                    <form action="../controller/gestion_categorias.php" method="POST" class="space-y-4">
                                         <input type="hidden" name="accion" value="actualizar">
                                         <input type="hidden" name="id_categoria" value="<?= $categoria['id_categoria']; ?>">
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Nombre</label>
-                                            <input type="text" name="nombre" class="form-control"
-                                                value="<?= isset($categoria['nombre']) ? htmlspecialchars($categoria['nombre']) : ''; ?>"
-                                                required>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre</label>
+                                            <input type="text" name="nombre" value="<?= htmlspecialchars($categoria['nombre']); ?>" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Descripción</label>
-                                            <input type="text" name="descripcion" class="form-control"
-                                                value="<?= isset($categoria['descripcion']) ? htmlspecialchars($categoria['descripcion']) : ''; ?>"
-                                                required>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-slate-700 mb-2">Descripción</label>
+                                            <textarea name="descripcion" rows="3" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"><?= htmlspecialchars($categoria['descripcion']); ?></textarea>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success">Guardar cambios</button>
-                                    </div>
-                                </form>
+                                        <div class="flex gap-2">
+                                            <button type="button" onclick="document.getElementById('modalEditar<?= $categoria['id_categoria'] ?>').classList.add('hidden')" class="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancelar</button>
+                                            <button type="submit" class="flex-1 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Guardar</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+    </footer>
 </body>
-
 </html>

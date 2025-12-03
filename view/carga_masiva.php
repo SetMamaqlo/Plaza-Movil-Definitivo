@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 3) {
     exit();
 }
 
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 require_once '../controller/carga_masiva_controller.php';
 ?>
 
@@ -20,123 +20,113 @@ require_once '../controller/carga_masiva_controller.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carga Masiva de Productos - Agricultor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
 </head>
-<body>
-    <?php include __DIR__ . '/../navbar.php'; ?>
+<body class="bg-slate-50 text-slate-900">
+    <?php include '../navbar.php'; ?>
     <div style="height:70px"></div>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card shadow">
-                    <div class="card-header bg-success text-white">
-                        <h4 class="mb-0">
-                            <i class="bi bi-upload"></i> Carga Masiva de Productos
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        
-                        <?php if (!empty($mensaje)): ?>
-                            <div class="alert alert-<?php echo $tipoMensaje; ?> alert-dismissible fade show" role="alert">
-                                <h5 class="alert-heading">
-                                    <?php echo $tipoMensaje == 'success' ? '✅ Éxito' : ($tipoMensaje == 'warning' ? '⚠️ Advertencia' : '❌ Error'); ?>
-                                </h5>
-                                <?php echo htmlspecialchars($mensaje); ?>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        <?php endif; ?>
+    
+    <div class="mx-auto max-w-4xl px-6 py-12">
+        <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">
+                    <i class="bi bi-upload me-2 text-emerald-600"></i>Carga Masiva de Productos
+                </h1>
+                <p class="text-slate-600">Sube múltiples productos a través de un archivo CSV</p>
+            </div>
 
-                        <div class="alert alert-info">
-                            <h5><i class="bi bi-info-circle"></i> Instrucciones:</h5>
-                            <p>El archivo CSV debe tener este formato (la columna "Unidad" es opcional):</p>
-                            
-                            <div class="table-responsive mt-3">
-                                <table class="table table-sm table-bordered">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th>Categoría</th>
-                                            <th>Precio</th>
-                                            <th>Stock</th>
-                                            <th>Unidad (Opcional)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Manzana Roja</td>
-                                            <td>Manzana fresca de la región</td>
-                                            <td>Frutas</td>
-                                            <td>2500</td>
-                                            <td>100</td>
-                                            <td>Kilo</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <form action="carga_masiva.php" method="POST" enctype="multipart/form-data" id="formCarga">
-                            <div class="mb-4">
-                                <label for="archivo_excel" class="form-label">
-                                    <strong>Seleccionar archivo CSV:</strong>
-                                </label>
-                                <input type="file" class="form-control" id="archivo_excel" name="archivo_excel" 
-                                       accept=".csv" required>
-                                <div class="form-text">
-                                    Tamaño máximo: 10MB. Formato permitido: CSV (.csv)
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a href="mis_productos.php" class="btn btn-secondary me-md-2">
-                                    <i class="bi bi-arrow-left"></i> Volver a Mis Productos
-                                </a>
-                                <button type="submit" class="btn btn-success" id="btnCargar">
-                                    <i class="bi bi-upload"></i> Iniciar Carga Masiva
-                                </button>
-                            </div>
-                        </form>
-
-                        <div class="mt-5">
-                            <div class="alert alert-warning">
-                                <h5><i class="bi bi-download"></i> ¿No tienes una plantilla?</h5>
-                                <a href="../controller/descargar_plantilla.php?tipo=csv" 
-                                   class="btn btn-outline-primary">
-                                    <i class="bi bi-file-earmark-text"></i> Descargar Plantilla CSV
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Información de categorías -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="bi bi-list-check"></i> Categorías Disponibles en tu Sistema</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <?php
-                                        echo '<div class="small">';
-                                        foreach ($categorias as $cat) {
-                                            echo "<span class='badge bg-secondary me-1'>{$cat['nombre']} (ID:{$cat['id_categoria']})</span>";
-                                        }
-                                        echo '</div>';
-                                        ?>
-                                        <p class="mt-2 text-muted"><small>Usa exactamente estos nombres en la columna "Categoría" del CSV</small></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <?php if (!empty($mensaje)): ?>
+                <div class="mb-6 p-4 rounded-xl <?= $tipoMensaje == 'success' ? 'bg-green-50 border border-green-200 text-green-700' : ($tipoMensaje == 'warning' ? 'bg-yellow-50 border border-yellow-200 text-yellow-700' : 'bg-red-50 border border-red-200 text-red-700'); ?>">
+                    <h5 class="font-semibold mb-1">
+                        <?php echo $tipoMensaje == 'success' ? '✅ Éxito' : ($tipoMensaje == 'warning' ? '⚠️ Advertencia' : '❌ Error'); ?>
+                    </h5>
+                    <p class="text-sm"><?php echo htmlspecialchars($mensaje); ?></p>
                 </div>
+            <?php endif; ?>
+
+            <!-- Instrucciones -->
+            <div class="mb-8 rounded-xl bg-blue-50 border border-blue-200 p-6">
+                <h3 class="font-semibold text-blue-900 mb-3"><i class="bi bi-info-circle me-2"></i>Instrucciones:</h3>
+                <p class="text-sm text-blue-800 mb-3">El archivo CSV debe tener este formato (la columna "Unidad" es opcional):</p>
+                
+                <div class="rounded-lg bg-white overflow-x-auto mt-3">
+                    <table class="text-sm w-full">
+                        <thead class="bg-slate-100 border-b border-slate-200">
+                            <tr>
+                                <th class="px-4 py-2 text-left font-semibold">Nombre</th>
+                                <th class="px-4 py-2 text-left font-semibold">Descripción</th>
+                                <th class="px-4 py-2 text-left font-semibold">Categoría</th>
+                                <th class="px-4 py-2 text-left font-semibold">Precio</th>
+                                <th class="px-4 py-2 text-left font-semibold">Stock</th>
+                                <th class="px-4 py-2 text-left font-semibold">Unidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-100">
+                                <td class="px-4 py-2">Manzana Roja</td>
+                                <td class="px-4 py-2">Manzana fresca de la región</td>
+                                <td class="px-4 py-2">Frutas</td>
+                                <td class="px-4 py-2">2500</td>
+                                <td class="px-4 py-2">100</td>
+                                <td class="px-4 py-2">Kilo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <form action="carga_masiva.php" method="POST" enctype="multipart/form-data" id="formCarga" class="mb-8">
+                <div class="mb-6">
+                    <label for="archivo_excel" class="block text-sm font-semibold text-slate-700 mb-3">
+                        <i class="bi bi-file-earmark-csv me-2"></i>Seleccionar archivo CSV:
+                    </label>
+                    <input type="file" class="w-full rounded-xl border-2 border-dashed border-slate-300 px-4 py-6 text-sm outline-none transition focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 cursor-pointer" 
+                           id="archivo_excel" name="archivo_excel" accept=".csv" required>
+                    <p class="text-xs text-slate-600 mt-2">
+                        <i class="bi bi-info-circle me-1"></i>Tamaño máximo: 10MB. Formato permitido: CSV (.csv)
+                    </p>
+                </div>
+
+                <div class="flex gap-3 justify-end">
+                    <a href="mis_productos.php" class="rounded-xl border border-slate-200 text-slate-700 font-semibold px-6 py-3 hover:bg-slate-50 transition">
+                        <i class="bi bi-arrow-left me-2"></i>Volver a Mis Productos
+                    </a>
+                    <button type="submit" class="rounded-xl bg-emerald-600 text-white font-semibold px-6 py-3 hover:bg-emerald-500 transition shadow-lg" id="btnCargar">
+                        <i class="bi bi-upload me-2"></i>Iniciar Carga Masiva
+                    </button>
+                </div>
+            </form>
+
+            <!-- Descarga plantilla -->
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-6 mb-6">
+                <h4 class="font-semibold text-amber-900 mb-3"><i class="bi bi-download me-2"></i>¿No tienes una plantilla?</h4>
+                <a href="../controller/descargar_plantilla.php?tipo=csv" 
+                   class="inline-flex items-center gap-2 rounded-xl border border-amber-300 bg-white text-amber-700 font-semibold px-6 py-3 hover:bg-amber-50 transition">
+                    <i class="bi bi-file-earmark-text"></i> Descargar Plantilla CSV
+                </a>
+            </div>
+
+            <!-- Categorías disponibles -->
+            <div class="rounded-xl bg-slate-100 p-6">
+                <h4 class="font-semibold text-slate-900 mb-3"><i class="bi bi-list-check me-2"></i>Categorías Disponibles</h4>
+                <div class="flex flex-wrap gap-2">
+                    <?php foreach ($categorias as $cat): ?>
+                        <span class="rounded-full bg-slate-600 text-white text-xs font-semibold px-3 py-1">
+                            <?= htmlspecialchars($cat['nombre']); ?> (ID: <?= $cat['id_categoria']; ?>)
+                        </span>
+                    <?php endforeach; ?>
+                </div>
+                <p class="text-xs text-slate-600 mt-3"><i class="bi bi-info-circle me-1"></i>Usa exactamente estos nombres en la columna "Categoría" del CSV</p>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+    </footer>
+
     <script>
         document.getElementById('formCarga').addEventListener('submit', function(e) {
             const archivo = document.getElementById('archivo_excel').files[0];
@@ -150,7 +140,7 @@ require_once '../controller/carga_masiva_controller.php';
                     return;
                 }
                 
-                btnCargar.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+                btnCargar.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Procesando...';
                 btnCargar.disabled = true;
             }
         });

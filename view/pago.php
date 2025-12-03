@@ -1,15 +1,13 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
-// Validar sesión
 if (!isset($_SESSION['user_id_usuario'])) {
     header("Location: login.php");
     exit;
 }
 
-// Verificar que venga un id_pedido en la URL
 if (!isset($_GET['id_pedido'])) {
     header("Location: carrito.php?error=no_pedido");
     exit;
@@ -18,7 +16,6 @@ if (!isset($_GET['id_pedido'])) {
 $id_pedido = intval($_GET['id_pedido']);
 $id_usuario = $_SESSION['user_id_usuario'];
 
-// Obtener pedido
 $stmt = $pdo->prepare("
     SELECT p.id_pedido, p.fecha, p.estado, u.nombre_completo AS comprador
     FROM pedidos p
@@ -33,7 +30,6 @@ if (!$pedido) {
     exit;
 }
 
-// Obtener detalles del pedido
 $stmtDetalles = $pdo->prepare("
     SELECT d.cantidad, d.precio_unitario, pr.nombre, pr.foto, u.nombre_completo AS agricultor
     FROM pedido_detalle d
@@ -45,7 +41,6 @@ $stmtDetalles = $pdo->prepare("
 $stmtDetalles->execute([$id_pedido]);
 $detalles = $stmtDetalles->fetchAll(PDO::FETCH_ASSOC);
 
-// Calcular total
 $total = 0;
 foreach ($detalles as $d) {
     $total += $d['precio_unitario'] * $d['cantidad'];
@@ -53,73 +48,86 @@ foreach ($detalles as $d) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pago del Pedido #<?php echo $id_pedido; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
-    
 </head>
-
-<body>
+<body class="bg-slate-50 text-slate-900">
     <?php include '../navbar.php'; ?>
     <div style="height:70px"></div>
 
-    <div class="container mt-5">
-        <h2 class="mb-4">Pago del Pedido #<?php echo $pedido['id_pedido']; ?></h2>
+    <div class="mx-auto max-w-4xl px-6 py-12">
+        <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Pago del Pedido #<?php echo $id_pedido; ?></h1>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <div class="rounded-lg bg-slate-50 p-4 border border-slate-200">
+                    <p class="text-sm text-slate-600"><strong>Comprador:</strong> <?php echo htmlspecialchars($pedido['comprador']); ?></p>
+                </div>
+                <div class="rounded-lg bg-slate-50 p-4 border border-slate-200">
+                    <p class="text-sm text-slate-600"><strong>Fecha:</strong> <?php echo $pedido['fecha']; ?></p>
+                </div>
+                <div class="rounded-lg bg-slate-50 p-4 border border-slate-200">
+                    <p class="text-sm text-slate-600"><strong>Estado:</strong> <span class="font-semibold text-emerald-600"><?php echo ucfirst($pedido['estado']); ?></span></p>
+                </div>
+            </div>
 
-        <p><strong>Comprador:</strong> <?php echo htmlspecialchars($pedido['comprador']); ?></p>
-        <p><strong>Fecha:</strong> <?php echo $pedido['fecha']; ?></p>
-        <p><strong>Estado:</strong> <?php echo ucfirst($pedido['estado']); ?></p>
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-100 border-b-2 border-slate-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-semibold">Producto</th>
+                            <th class="px-4 py-3 text-left font-semibold">Imagen</th>
+                            <th class="px-4 py-3 text-left font-semibold">Agricultor</th>
+                            <th class="px-4 py-3 text-center font-semibold">Cantidad</th>
+                            <th class="px-4 py-3 text-right font-semibold">Precio Unitario</th>
+                            <th class="px-4 py-3 text-right font-semibold">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <?php foreach ($detalles as $d): ?>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3"><?php echo htmlspecialchars($d['nombre']); ?></td>
+                                <td class="px-4 py-3">
+                                    <img src="../img/<?php echo htmlspecialchars($d['foto']); ?>" width="60" height="60" class="rounded-lg object-cover">
+                                </td>
+                                <td class="px-4 py-3"><?php echo htmlspecialchars($d['agricultor']); ?></td>
+                                <td class="px-4 py-3 text-center"><?php echo $d['cantidad']; ?></td>
+                                <td class="px-4 py-3 text-right">$<?php echo number_format($d['precio_unitario']); ?></td>
+                                <td class="px-4 py-3 text-right font-semibold">$<?php echo number_format($d['precio_unitario'] * $d['cantidad']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Imagen</th>
-                    <th>Agricultor</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($detalles as $d): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($d['nombre']); ?></td>
-                        <td>
-                            <img src="../img/<?php echo htmlspecialchars($d['foto']); ?>" width="60" height="60"
-                                style="object-fit:cover;">
-                        </td>
-                        <td><?php echo htmlspecialchars($d['agricultor']); ?></td>
-                        <td><?php echo $d['cantidad']; ?></td>
-                        <td>$<?php echo number_format($d['precio_unitario']); ?></td>
-                        <td>$<?php echo number_format($d['precio_unitario'] * $d['cantidad']); ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+            <div class="flex justify-end mb-8">
+                <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-6 w-full sm:w-96">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Total a Pagar</h3>
+                    <p class="text-3xl font-bold text-emerald-600">$<?php echo number_format($total); ?></p>
+                </div>
+            </div>
 
-        <div class="d-flex justify-content-end">
-            <h4>Total: <span class="text-success">$<?php echo number_format($total); ?></span></h4>
+            <form action="../controller/gestion_pagos.php" method="POST" class="space-y-4">
+                <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido']; ?>">
+                <input type="hidden" name="monto" value="<?php echo $total; ?>">
+                
+                <button type="submit" class="w-full rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
+                    <i class="bi bi-credit-card me-2"></i> Confirmar Pago
+                </button>
+            </form>
+
+            <a href="carritoview.php" class="inline-block mt-4 rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                <i class="bi bi-arrow-left me-2"></i> Volver al carrito
+            </a>
         </div>
-
-        <form action="../controller/gestion_pagos.php" method="POST" class="mt-4">
-            <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido']; ?>">
-            <input type="hidden" name="monto" value="<?php echo $total; ?>">
-            <button type="submit" class="btn btn-success btn-lg w-100">
-                <i class="bi bi-credit-card"></i> Confirmar Pago
-            </button>
-        </form>
-
-        <a href="carrito.php" class="btn btn-outline-secondary mt-3">
-            <i class="bi bi-arrow-left"></i> Volver al carrito
-        </a>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+    </footer>
 </body>
-
 </html>

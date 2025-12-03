@@ -12,3 +12,356 @@ Stack trace:
 #0 D:\xampp\htdocs\Plaza-Movil-Definitivo\index.php(4): require_once()
 #1 {main}
   thrown in D:\xampp\htdocs\Plaza-Movil-Definitivo\config\database.php on line 5
+[03-Dec-2025 05:53:52 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 05:53:54 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 05:53:54 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 05:54:49 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 05:54:51 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 05:57:03 Europe/Berlin] ✅ Conectado a mysql correctamente
+[03-Dec-2025 06:10:39 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[03-Dec-2025 06:10:51 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[03-Dec-2025 06:11:14 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[03-Dec-2025 06:12:46 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[03-Dec-2025 06:13:00 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[03-Dec-2025 06:17:55 Europe/Berlin] PHP Parse error:  Unmatched '}' in C:\xampp\htdocs\Plaza-Movil-Definitivo\config\database.php on line 64
+[03-Dec-2025 06:18:41 Europe/Berlin] Error de conexión a BD (intento 1/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:18:41 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:18:42 Europe/Berlin] Error de conexión a BD (intento 2/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:18:42 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:18:44 Europe/Berlin] Error de conexión a BD (intento 3/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:18:44 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:18:44 Europe/Berlin] No se pudo conectar a la base de datos tras 3 intentos.
+[03-Dec-2025 06:18:44 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:19:06 Europe/Berlin] Error de conexión a BD (intento 1/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:06 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:08 Europe/Berlin] Error de conexión a BD (intento 2/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:08 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:10 Europe/Berlin] Error de conexión a BD (intento 3/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:10 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:10 Europe/Berlin] No se pudo conectar a la base de datos tras 3 intentos.
+[03-Dec-2025 06:19:10 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:19:35 Europe/Berlin] Error de conexión a BD (intento 1/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:35 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:36 Europe/Berlin] Error de conexión a BD (intento 2/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:36 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:38 Europe/Berlin] Error de conexión a BD (intento 3/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:38 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:38 Europe/Berlin] No se pudo conectar a la base de datos tras 3 intentos.
+[03-Dec-2025 06:19:38 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:19:55 Europe/Berlin] Error de conexión a BD (intento 1/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:55 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:57 Europe/Berlin] Error de conexión a BD (intento 2/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:57 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:58 Europe/Berlin] Error de conexión a BD (intento 3/3): SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:19:58 Europe/Berlin] Sugerencia: verifica que el servicio MySQL/MariaDB esté en ejecución y que DB_HOST/DB_PORT sean correctos.
+[03-Dec-2025 06:19:58 Europe/Berlin] No se pudo conectar a la base de datos tras 3 intentos.
+[03-Dec-2025 06:19:58 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:22:07 Europe/Berlin] DB intento: host=dpg-d4j06ue3jp1c73cbavv0-a port=5432 db=agro_app user=r*** pass=(empty)
+[03-Dec-2025 06:22:08 Europe/Berlin] Host no alcanzable: dpg-d4j06ue3jp1c73cbavv0-a:5432 (errno=0) - php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:22:08 Europe/Berlin] Sugerencia: si estás en local, ajusta DB_HOST a 127.0.0.1 y DB_PORT a 3306; verifica que MySQL esté en ejecución o que el host remoto exista.
+[03-Dec-2025 06:22:08 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:23:17 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:23:17 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:23:46 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:23:46 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\Plaza-Movil-Definitivo\index.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Plaza-Movil-Definitivo\index.php on line 51
+[03-Dec-2025 06:24:28 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:24:28 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:24:54 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:24:54 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:26:26 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:26:26 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:28:05 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:28:05 Europe/Berlin] PHP Fatal error:  Uncaught Error: Call to a member function prepare() on null in C:\xampp\htdocs\Plaza-Movil-Definitivo\index.php:51
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\Plaza-Movil-Definitivo\index.php on line 51
+[03-Dec-2025 06:28:57 Europe/Berlin] Error de conexión a BD: SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for dpg-d4j06ue3jp1c73cbavv0-a failed: Host desconocido. 
+[03-Dec-2025 06:28:57 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[03-Dec-2025 06:30:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:31:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:31:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:31:31 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:51:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:51:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:51:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 06:51:55 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:03:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:03:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:02 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:34 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:37 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:39 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:43 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:48 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:50 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:06:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:09 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:09 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:16 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:16 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:25 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:26 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:07:42 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:02 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:06 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:12 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:15 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:21 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:24 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:08:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:11:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:11:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:06 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:16 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:34 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:14:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:08 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:12 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:12 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:26 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:28 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:31 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:17:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:18:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:21:49 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:21:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:21:54 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:21:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:21:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:22:09 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:36 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:36 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:38 Europe/Berlin] Error al crear preferencia: Falta MERCADOPAGO_ACCESS_TOKEN en el entorno.
+[03-Dec-2025 07:25:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:43 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:43 Europe/Berlin] Error en confirmar_pedido_efectivo.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_usuario' in 'field list'
+[03-Dec-2025 07:25:43 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:47 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:47 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:48 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:48 Europe/Berlin] Error al crear preferencia: Falta MERCADOPAGO_ACCESS_TOKEN en el entorno.
+[03-Dec-2025 07:25:48 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:25:51 Europe/Berlin] Error en confirmar_pedido_efectivo.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_usuario' in 'field list'
+[03-Dec-2025 07:25:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:15 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:26 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:31 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:49 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:49 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:57 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:27:57 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:27:57 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:03 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:03 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:04 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:28:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:16 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:17 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:28:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:18 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:28:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:28:33 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:28:34 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:04 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:05 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:29:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:06 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:06 Europe/Berlin] Error en crear_pedido.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'precio_unitario' in 'field list'
+[03-Dec-2025 07:29:06 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:38 Europe/Berlin] Error al crear preferencia: Falta MERCADOPAGO_ACCESS_TOKEN en el entorno.
+[03-Dec-2025 07:29:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:41 Europe/Berlin] Error en confirmar_pedido_efectivo.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_usuario' in 'field list'
+[03-Dec-2025 07:29:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:42 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:45 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:29:49 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:16 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:19 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:23 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:24 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:28 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:28 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:29 Europe/Berlin] Error al crear preferencia: Falta MERCADOPAGO_ACCESS_TOKEN en el entorno.
+[03-Dec-2025 07:36:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:33 Europe/Berlin] Error en confirmar_pedido_efectivo.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_usuario' in 'field list'
+[03-Dec-2025 07:36:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:34 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:36 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:36:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:12 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:12 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:13 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:13 Europe/Berlin] Error al crear preferencia: Falta MERCADOPAGO_ACCESS_TOKEN en el entorno.
+[03-Dec-2025 07:38:13 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:14 Europe/Berlin] Error en confirmar_pedido_efectivo.php: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'id_usuario' in 'field list'
+[03-Dec-2025 07:38:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:17 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:23 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:26 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:26 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:38:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:36 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:42 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:42 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:47 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:54 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:39:56 Europe/Berlin] Error al obtener historial de ventas: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.nombre' in 'field list'
+[03-Dec-2025 07:40:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:44:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:44:40 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:44:44 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:44:47 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:45:08 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:45:08 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:47:08 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:47:15 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:47:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:47:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:47:43 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:23 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:40 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:40 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:44 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:49 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:51 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:53 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:50:53 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:53:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:53:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:53:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:55:38 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:55:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:55:53 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:56:02 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:56:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:56:05 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:57:33 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:57:41 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:59:50 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 07:59:52 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:00:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:01:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:01:59 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:02:01 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:02:01 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:02:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:02:58 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:02:59 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:01 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:03 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:06 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:37 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:39 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:40 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:03:40 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:34 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:35 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:44 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:47 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:05:56 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:06:01 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:06:02 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:06:13 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:06:30 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:08:23 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:08:24 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:08:25 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:08:27 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:08:28 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:15:18 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:15:22 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:15:24 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:17:39 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:17:41 Europe/Berlin] No se pudo enviar correo de recuperación con mail()
+[03-Dec-2025 08:17:41 Europe/Berlin] No se pudo enviar el correo de recuperación a felixxd722@gmail.com
+[03-Dec-2025 08:21:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:21:11 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:21:14 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:23:03 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[03-Dec-2025 08:23:07 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app

@@ -40,95 +40,97 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
 
 <head>
     <meta charset="UTF-8">
-    <title>Carrito de Compras</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-900">
     <!-- Navbar -->
     <?php include '../navbar.php'; ?>
 
     <!-- Espacio para que el contenido no quede oculto bajo la navbar fija -->
     <div style="height:70px"></div>
 
-    <div class="cart-container">
+    <div class="mx-auto max-w-4xl px-6 py-12">
         <?php if ($pago === 'exitoso'): ?>
-            <div class="alert alert-success">
-                <i class="bi bi-check-circle"></i> ¡Pago realizado con éxito! Tu pedido ha sido registrado.
+            <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700">
+                <i class="bi bi-check-circle me-2"></i>¡Pago realizado con éxito! Tu pedido ha sido registrado.
             </div>
         <?php elseif ($pago === 'fallido'): ?>
-            <div class="alert alert-danger">
-                <i class="bi bi-x-circle"></i> Hubo un problema con el pago. Intenta nuevamente.
+            <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
+                <i class="bi bi-x-circle me-2"></i>Hubo un problema con el pago. Intenta nuevamente.
             </div>
         <?php elseif (isset($_GET['error']) && $_GET['error'] === 'no_pedido'): ?>
-            <div class="alert alert-warning">
-                <i class="bi bi-exclamation-triangle"></i> No se recibió un pedido válido.
+            <div class="mb-6 p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-700">
+                <i class="bi bi-exclamation-triangle me-2"></i>No se recibió un pedido válido.
             </div>
         <?php endif; ?>
-        <div class="d-flex align-items-center mb-4">
-            <i class="bi bi-cart3 cart-icon"></i>
-            <h2 class="ms-3 cart-title mb-0">Carrito de Compras</h2>
+
+        <div class="flex items-center gap-3 mb-8">
+            <i class="bi bi-cart3 text-3xl text-emerald-600"></i>
+            <h1 class="text-3xl font-bold text-slate-900">Carrito de Compras</h1>
         </div>
+
         <?php if (empty($productos)): ?>
-            <div class="cart-empty">
-                <i class="bi bi-emoji-frown cart-empty-icon"></i>
-                <p>Tu carrito está vacío.</p>
-                <a href="../index.php" class="btn btn-outline-success mt-2"><i class="bi bi-arrow-left"></i> Seguir
-                    comprando</a>
+            <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-12 text-center">
+                <i class="bi bi-emoji-frown text-6xl text-slate-300 mb-4 block"></i>
+                <p class="text-lg text-slate-600 mb-6">Tu carrito está vacío.</p>
+                <a href="../index.php" class="inline-block rounded-xl bg-emerald-600 text-white font-semibold px-6 py-3 hover:bg-emerald-500 transition">
+                    <i class="bi bi-arrow-left me-2"></i>Seguir comprando
+                </a>
             </div>
         <?php else: ?>
-            <?php foreach ($productos as $producto): ?>
-                <div class="row align-items-center cart-product">
-                    <div class="col-2">
-                        <img src="../img/<?php echo htmlspecialchars($producto['foto']); ?>" class="cart-img"
-                            alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
-                    </div>
-                    <div class="col-4">
-                        <div class="fw-bold"><?php echo htmlspecialchars($producto['nombre']); ?></div>
-                        <div class="text-muted"><?php echo htmlspecialchars($producto['descripcion']); ?></div>
-                    </div>
-                    <div class="col-2">
+            <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-6 mb-6">
+                <?php foreach ($productos as $producto): ?>
+                    <div class="flex items-center gap-4 py-4 border-b border-slate-200 last:border-b-0">
+                        <img src="../img/<?php echo htmlspecialchars($producto['foto']); ?>" 
+                             class="h-20 w-20 rounded-lg object-cover">
+                        <div class="flex-1">
+                            <h3 class="font-bold text-slate-900"><?php echo htmlspecialchars($producto['nombre']); ?></h3>
+                            <p class="text-sm text-slate-600"><?php echo htmlspecialchars($producto['descripcion']); ?></p>
+                        </div>
                         <!-- Formulario para editar cantidad -->
-                        <form action="../controller/editar_cantidad.php" method="POST" class="d-flex">
+                        <form action="../controller/editar_cantidad.php" method="POST" class="flex items-center gap-2">
                             <input type="hidden" name="id_detalle" value="<?php echo $producto['id_detalle']; ?>">
-                            <input type="number" name="cantidad" value="<?php echo $producto['cantidad']; ?>" min="1"
-                                class="form-control form-control-sm text-center me-2" style="width:80px;">
-                            <button type="submit" class="btn btn-sm btn-outline-success">Actualizar</button>
+                            <input type="number" name="cantidad" value="<?php echo $producto['cantidad']; ?>" min="1" class="w-20 rounded-lg border border-slate-200 px-3 py-2 text-center text-sm">
+                            <button type="submit" class="rounded-lg bg-emerald-600 text-white px-3 py-2 text-sm font-semibold hover:bg-emerald-500">Actualizar</button>
                         </form>
-                    </div>
-                    <div class="col-2 text-end">
-                        <span class="text-success fw-semibold">
-                            $<?php echo number_format($producto['precio_unitario'] * $producto['cantidad']); ?>
-                        </span>
-                    </div>
-                    <div class="col-2 text-end">
+                        <div class="text-right">
+                            <p class="text-lg font-bold text-emerald-600">$<?php echo number_format($producto['precio_unitario'] * $producto['cantidad']); ?></p>
+                        </div>
                         <!-- Formulario para eliminar producto -->
-                        <form action="../controller/eliminar_del_carrito.php" method="POST" style="display:inline;">
+                        <form action="../controller/eliminar_del_carrito.php" method="POST" class="ml-2">
                             <input type="hidden" name="id_detalle" value="<?php echo $producto['id_detalle']; ?>">
-                            <button type="submit" class="btn btn-link cart-remove" title="Eliminar">
+                            <button type="submit" class="text-red-600 hover:text-red-700 font-bold text-lg">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </form>
                     </div>
-                </div>
-            <?php endforeach; ?>
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <form action="../controller/crear_pedido.php" method="POST">
-                    <input type="hidden" name="id_carrito" value="<?php echo $carrito['id_carrito']; ?>">
-                    <button type="submit" class="btn btn-checkout btn-lg text-white">
-                        <i class="bi bi-credit-card"></i> Comprar ahora
-                    </button>
-                </form>
-
+                <?php endforeach; ?>
             </div>
-            <a href="../index.php" class="btn btn-outline-success mt-2"><i class="bi bi-arrow-left"></i> Seguir
-                comprando</a>
+
+            <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-6 mb-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Total</h3>
+                <p class="text-3xl font-bold text-emerald-600">$<?php echo number_format($total, 2); ?></p>
+            </div>
+
+            <form action="../controller/crear_pedido.php" method="POST" class="mb-4">
+                <input type="hidden" name="id_carrito" value="<?php echo $carrito['id_carrito']; ?>">
+                <button type="submit" class="w-full rounded-xl bg-emerald-600 text-white font-bold py-4 text-lg hover:bg-emerald-500 transition shadow-lg">
+                    <i class="bi bi-credit-card me-2"></i>Comprar Ahora
+                </button>
+            </form>
+
+            <a href="../index.php" class="inline-block rounded-xl border border-slate-200 text-slate-700 font-semibold px-6 py-3 hover:bg-slate-50 transition">
+                <i class="bi bi-arrow-left me-2"></i>Seguir comprando
+            </a>
         <?php endif; ?>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+    </footer>
 </body>
-
 </html>

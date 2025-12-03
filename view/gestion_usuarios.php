@@ -1,247 +1,128 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once '../config/conexion.php';
+require_once '../config/database.php';
 
-// Asegurarse de que $id_rol sea un entero para evitar problemas de comparación estricta
 $id_rol = isset($_SESSION['user_id_rol']) ? (int) $_SESSION['user_id_rol'] : null;
 
-// Verificar si el usuario tiene el rol de administrador
 if ($id_rol !== 1) {
     header("Location: ../index.php");
     exit;
 }
 
-// Obtener la lista de usuarios
 $stmt = $pdo->prepare("SELECT id_usuario, nombre_completo, email, username, id_rol FROM usuarios");
 $stmt->execute();
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Verificar si se debe mostrar el modal de éxito o eliminación
 $success = isset($_GET['success']) && $_GET['success'] == 1;
 $deleted = isset($_GET['deleted']) && $_GET['deleted'] == 1;
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Gestión de Usuarios - Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
-    
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .card {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .table th,
-        .table td {
-            vertical-align: middle;
-        }
-    </style>
 </head>
-
-<body>
-    <!-- Navbar -->
+<body class="bg-slate-50 text-slate-900">
     <?php include '../navbar.php'; ?>
+    <div style="height:70px"></div>
 
-    <div style="height:70px"></div> <!-- Espacio para navbar fija -->
-
-    <div class="container mt-5">
-        <div class="card p-4">
-            <h1 class="text-center mb-4">Gestión de Usuarios</h1>
-
-            <!-- Botón volver -->
-            <div class="text-start mb-3">
-                <a href="dashboard.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver al
-                    Dashboard</a>
+    <div class="mx-auto max-w-7xl px-6 py-12">
+        <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Gestión de Usuarios</h1>
+                <a href="dashboard.php" class="rounded-xl border border-slate-200 text-slate-700 px-6 py-2 font-semibold hover:bg-slate-50">
+                    <i class="bi bi-arrow-left me-2"></i>Volver al Dashboard
+                </a>
             </div>
 
-            <!-- Botón crear usuario -->
-            <div class="text-end mb-3">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#crearUsuarioModal">
-                    <i class="bi bi-plus-circle"></i> Crear Usuario
+            <div class="mb-8">
+                <button type="button" onclick="document.getElementById('crearUsuarioModal').classList.remove('hidden')" 
+                        class="rounded-xl bg-emerald-600 text-white px-6 py-2 font-semibold hover:bg-emerald-500">
+                    <i class="bi bi-plus-circle me-2"></i>Crear Usuario
                 </button>
             </div>
 
             <!-- Modal crear usuario -->
-            <div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Nuevo Usuario</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form action="../controller/crear_usuario.php" method="POST"
-                            onsubmit="return validarFormulario(this);">
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre Completo</label>
-                                    <input type="text" class="form-control" name="nombre_completo" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="email" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" name="password" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre de Usuario</label>
-                                    <input type="text" class="form-control" name="username" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Rol</label>
-                                    <select name="rol" class="form-select" required>
-                                        <option value="1">Administrador</option>
-                                        <option value="2">Vendedor</option>
-                                        <option value="3">Comprador</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary">Crear Usuario</button>
-                            </div>
-                        </form>
+            <div id="crearUsuarioModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur" onclick="if(event.target === this) this.classList.add('hidden')">
+                <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-slate-900">Crear Nuevo Usuario</h3>
+                        <button onclick="document.getElementById('crearUsuarioModal').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 text-2xl">&times;</button>
                     </div>
+                    <form action="../controller/crear_usuario.php" method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre Completo</label>
+                            <input type="text" name="nombre_completo" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                            <input type="email" name="email" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
+                            <input type="password" name="password" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre de Usuario</label>
+                            <input type="text" name="username" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Rol</label>
+                            <select name="rol" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                                <option value="1">Administrador</option>
+                                <option value="2">Vendedor</option>
+                                <option value="3">Comprador</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="document.getElementById('crearUsuarioModal').classList.add('hidden')" class="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancelar</button>
+                            <button type="submit" class="flex-1 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Crear Usuario</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <!-- Modal éxito -->
-            <?php if ($success): ?>
-                <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Usuario Creado</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">El usuario ha sido creado con éxito.</div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        new bootstrap.Modal(document.getElementById('successModal')).show();
-                    });
-                </script>
-            <?php endif; ?>
-
             <!-- Tabla de usuarios -->
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-success">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-emerald-50 border-b-2 border-emerald-200">
                         <tr>
-                            <th>ID</th>
-                            <th>Nombre Completo</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Acciones</th>
+                            <th class="px-4 py-3 text-left font-semibold">ID</th>
+                            <th class="px-4 py-3 text-left font-semibold">Nombre Completo</th>
+                            <th class="px-4 py-3 text-left font-semibold">Email</th>
+                            <th class="px-4 py-3 text-left font-semibold">Rol</th>
+                            <th class="px-4 py-3 text-center font-semibold">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-slate-200">
                         <?php foreach ($usuarios as $usuario): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($usuario['id_usuario']); ?></td>
-                                <td><?= htmlspecialchars($usuario['nombre_completo']); ?></td>
-                                <td><?= htmlspecialchars($usuario['email']); ?></td>
-                                <td>
-                                    <form action="../controller/editar_usuario.php" method="POST" class="d-inline">
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3"><?= htmlspecialchars($usuario['id_usuario']); ?></td>
+                                <td class="px-4 py-3"><?= htmlspecialchars($usuario['nombre_completo']); ?></td>
+                                <td class="px-4 py-3"><?= htmlspecialchars($usuario['email']); ?></td>
+                                <td class="px-4 py-3">
+                                    <form action="../controller/editar_usuario.php" method="POST" class="inline">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario']; ?>">
-                                        <select name="rol" class="form-select form-select-sm" onchange="this.form.submit()">
-                                            <option value="1" <?= $usuario['id_rol'] == 1 ? 'selected' : ''; ?>>Administrador
-                                            </option>
-                                            <option value="2" <?= $usuario['id_rol'] == 2 ? 'selected' : ''; ?>>Vendedor
-                                            </option>
-                                            <option value="3" <?= $usuario['id_rol'] == 3 ? 'selected' : ''; ?>>Comprador
-                                            </option>
+                                        <select name="rol" class="rounded-lg border border-slate-200 px-3 py-1 text-sm" onchange="this.form.submit()">
+                                            <option value="1" <?= $usuario['id_rol'] == 1 ? 'selected' : ''; ?>>Administrador</option>
+                                            <option value="2" <?= $usuario['id_rol'] == 2 ? 'selected' : ''; ?>>Vendedor</option>
+                                            <option value="3" <?= $usuario['id_rol'] == 3 ? 'selected' : ''; ?>>Comprador</option>
                                         </select>
                                     </form>
                                 </td>
-                                <td>
-                                    <!-- Botón abrir modal edición -->
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                        data-bs-target="#editarModal<?= $usuario['id_usuario']; ?>">
-                                        <i class="bi bi-pencil"></i> Editar
+                                <td class="px-4 py-3 text-center space-x-2">
+                                    <button type="button" onclick="editarModal<?= $usuario['id_usuario']; ?>()" class="rounded-lg bg-amber-500 text-white px-3 py-1 text-xs font-semibold hover:bg-amber-600">
+                                        <i class="bi bi-pencil"></i>Editar
                                     </button>
-
-                                    <!-- Modal edición -->
-                                    <div class="modal fade" id="editarModal<?= $usuario['id_usuario']; ?>" tabindex="-1"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Editar Usuario</h5>
-                                                    <button type="button" class="btn-close"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <form action="../controller/editar_usuario.php" method="POST"
-                                                    onsubmit="return validarFormularioEdicion(this);">
-                                                    <input type="hidden" name="id_usuario"
-                                                        value="<?= $usuario['id_usuario']; ?>">
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Nombre Completo</label>
-                                                            <input type="text" class="form-control" name="nombre_completo"
-                                                                value="<?= htmlspecialchars($usuario['nombre_completo']); ?>"
-                                                                required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Email</label>
-                                                            <input type="email" class="form-control" name="email"
-                                                                value="<?= htmlspecialchars($usuario['email']); ?>"
-                                                                required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Nombre de Usuario</label>
-                                                            <input type="text" class="form-control" name="username"
-                                                                value="<?= htmlspecialchars($usuario['username']); ?>"
-                                                                required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Rol</label>
-                                                            <select name="rol" class="form-select" required>
-                                                                <option value="1" <?= $usuario['id_rol'] == 1 ? 'selected' : ''; ?>>Administrador</option>
-                                                                <option value="2" <?= $usuario['id_rol'] == 2 ? 'selected' : ''; ?>>Vendedor</option>
-                                                                <option value="3" <?= $usuario['id_rol'] == 3 ? 'selected' : ''; ?>>Comprador</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-warning">Guardar
-                                                            Cambios</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Botón eliminar -->
-                                    <form action="../controller/eliminar_usuario.php" method="POST" class="d-inline">
+                                    <form action="../controller/eliminar_usuario.php" method="POST" class="inline">
                                         <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario']; ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
-                                            <i class="bi bi-trash"></i> Eliminar
+                                        <button type="submit" class="rounded-lg bg-red-600 text-white px-3 py-1 text-xs font-semibold hover:bg-red-700" onclick="return confirm('¿Estás seguro?');">
+                                            <i class="bi bi-trash"></i>Eliminar
                                         </button>
                                     </form>
                                 </td>
@@ -253,41 +134,8 @@ $deleted = isset($_GET['deleted']) && $_GET['deleted'] == 1;
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function validarFormulario(form) {
-            const campos = ['nombre_completo', 'email', 'password', 'username', 'rol'];
-            for (const campo of campos) {
-                const input = form.querySelector(`[name="${campo}"]`);
-                if (!input || !input.value.trim()) {
-                    alert(`El campo ${campo} es obligatorio.`);
-                    input.focus();
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function validarFormularioEdicion(form) {
-            const campos = ['nombre_completo', 'username', 'email', 'rol'];
-            for (const campo of campos) {
-                const input = form.querySelector(`[name="${campo}"]`);
-                if (!input || !input.value.trim()) {
-                    alert(`El campo ${campo} es obligatorio.`);
-                    input.focus();
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        <?php if (isset($_GET['error']) && $_GET['error'] === 'campos'): ?>
-                < div class="alert alert-danger" > Todos los campos son obligatorios.</div >
-                <?php endif; ?>
-        <?php if (isset($_GET['error']) && $_GET['error'] === '1'): ?>
-                < div class="alert alert-danger" > Error al actualizar el usuario.Intenta de nuevo.</div >
-                <?php endif; ?>
-    </script>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+    </footer>
 </body>
-
 </html>

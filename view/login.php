@@ -1,84 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #e9f7ef;
-            /* Fondo verde claro */
-        }
-
-        .login-container {
-            background-color: #ffffff;
-            /* Fondo blanco para el formulario */
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-
-        .btn-primary {
-            background-color: #28a745;
-            /* Verde para el botón */
-            border-color: #28a745;
-        }
-
-        .btn-primary:hover {
-            background-color: #218838;
-            /* Verde más oscuro al pasar el cursor */
-            border-color: #1e7e34;
-        }
-
-        .logo {
-            display: block;
-            margin: 0 auto 20px auto;
-            width: 150px;
-            /* Ajusta el tamaño del logo (más grande) */
-        }
-    </style>
+    <title>Iniciar Sesión - Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
-<body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="login-container">
-                    <!-- Logo de la página -->
-                    <img src="../img/logoplazamovil.png" alt="Logo Plaza Movil" class="logo">
+<body class="bg-gradient-to-br from-emerald-50 to-slate-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-2xl shadow-2xl ring-1 ring-slate-100 p-8">
+            <div class="text-center mb-8">
+                <img src="../img/logoplazamovil.png" alt="Logo Plaza Móvil" class="h-16 w-auto mx-auto mb-4">
+                <h1 class="text-3xl font-bold text-slate-900">Iniciar Sesión</h1>
+            </div>
 
-                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+            <?php if (isset($_GET['error'])): ?>
+                <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                    <i class="bi bi-exclamation-circle me-2"></i> Usuario o contraseña incorrectos.
+                </div>
+            <?php endif; ?>
 
-                    <?php if (isset($_GET['error'])): ?>
-                        <div class="alert alert-danger">Usuario o contraseña incorrectos.</div>
-                    <?php endif; ?>
+            <?php if (isset($_GET['deleted']) && $_GET['deleted'] == '1'): ?>
+                <div class="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
+                    <i class="bi bi-check-circle me-2"></i> Usuario eliminado correctamente.
+                </div>
+            <?php endif; ?>
 
-                    <?php if (isset($_GET['deleted']) && $_GET['deleted'] == '1'): ?>
-                        <div class="alert alert-success text-center mt-3">
-                            Usuario eliminado correctamente. Puedes crear una nueva cuenta o iniciar sesión con otro usuario.
-                        </div>
-                    <?php endif; ?>
+            <?php if (isset($_GET['timeout']) && $_GET['timeout'] == '1'): ?>
+                <div class="mb-4 p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-700 text-sm">
+                    <i class="bi bi-exclamation-triangle me-2"></i> Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente.
+                </div>
+            <?php endif; ?>
 
-                    <form action="../controller/logincontroller.php" method="POST">
-                        <input type="hidden" name="action" value="login">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuario o Correo Electrónico</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
-                    </form>
-                    <div class="text-center mt-2">
-                        <a href="forgot_password.php">¿Olvidaste tu contraseña?</a>
-                    </div>
-                    <p class="text-center mt-3">
-                        ¿No tienes una cuenta? <a href="register.php">Regístrate aquí</a>
-                    </p>
+            <form action="../controller/logincontroller.php" method="POST" class="space-y-4">
+                <input type="hidden" name="action" value="login">
+                
+                <div>
+                    <label for="username" class="block text-sm font-semibold text-slate-700 mb-2">Usuario o Correo</label>
+                    <input type="text" id="username" name="username" required 
+                           class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" 
+                           placeholder="usuario@example.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">Contraseña</label>
+                    <input type="password" id="password" name="password" required 
+                           class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" 
+                           placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:-translate-y-0.5 hover:bg-emerald-500 focus:ring-2 focus:ring-emerald-200">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="mt-6 space-y-3 text-center">
+                <a href="forgot_password.php" class="inline-block text-sm text-emerald-600 hover:text-emerald-700 font-semibold">
+                    ¿Olvidaste tu contraseña?
+                </a>
+                <div class="text-sm text-slate-600">
+                    ¿No tienes cuenta? <a href="register.php" class="text-emerald-600 hover:text-emerald-700 font-semibold">Regístrate aquí</a>
                 </div>
             </div>
         </div>

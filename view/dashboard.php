@@ -3,10 +3,8 @@ require_once __DIR__ . '/../config/app.php';
 session_start();
 require_once '../config/database.php';
 
-// Asegurarse de que $id_rol sea un entero para evitar problemas de comparación estricta
 $id_rol = isset($_SESSION['user_id_rol']) ? (int) $_SESSION['user_id_rol'] : null;
 
-// Verificar si el usuario tiene el rol de administrador
 if ($id_rol !== 1) {
     header("Location: ../index.php");
     exit;
@@ -15,95 +13,118 @@ if ($id_rol !== 1) {
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Administrador</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Dashboard - Administrador - Plaza Móvil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="<?= base_url() ?>/css/styles.css">
-    
 </head>
-
-<body>
-    <!-- Navbar -->
+<body class="bg-slate-50 text-slate-900">
     <?php include '../navbar.php'; ?>
-
-    <!-- Espacio para que el contenido no quede oculto bajo la navbar fija -->
     <div style="height:70px"></div>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Dashboard - Administrador</h1>
-        <div class="row">
+    <div class="mx-auto max-w-6xl px-6 py-12">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Dashboard Administrativo</h1>
+            <p class="text-slate-600">Bienvenido al panel de control. Gestiona todos los aspectos de Plaza Móvil desde aquí.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Gestión de Usuarios -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-people-fill" style="font-size: 3rem; color: #007bff;"></i>
-                        <h5 class="card-title mt-3">Gestión de Usuarios</h5>
-                        <p class="card-text">Administra los usuarios registrados en el sistema.</p>
-                        <a href="gestion_usuarios.php" class="btn btn-primary">Ir</a>
-                    </div>
+            <a href="gestion_usuarios.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-6 text-white">
+                    <i class="bi bi-people-fill text-4xl mb-2 block"></i>
                 </div>
-            </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Usuarios</h3>
+                    <p class="text-sm text-slate-600 mb-4">Administra los usuarios registrados en el sistema.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-blue-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
 
             <!-- Gestión de Productos -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-box-seam" style="font-size: 3rem; color: #28a745;"></i>
-                        <h5 class="card-title mt-3">Gestión de Productos</h5>
-                        <p class="card-text">Administra los productos publicados en el sistema.</p>
-                        <a href="gestion_productos.php" class="btn btn-success">Ir</a>
-                    </div>
+            <a href="gestion_productos.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-emerald-400 to-emerald-600 p-6 text-white">
+                    <i class="bi bi-box-seam text-4xl mb-2 block"></i>
                 </div>
-            </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Productos</h3>
+                    <p class="text-sm text-slate-600 mb-4">Administra los productos publicados en el sistema.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
 
-            <!-- gestión unidades de medida -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-scale" style="font-size: 3rem; color: #dc3545;"></i>
-                        <div style="font-size: 1.5rem; color: #dc3545; font-weight: bold;">Kg</div>
-                        <h5 class="card-title mt-3">Gestión de medidas</h5>
-                        <p class="card-text">Administra las unidades de medida publicadas en el sistema.</p>
-                        <a href="gestion_medidas.php" class="btn btn-danger">Ir</a>
-                    </div>
+            <!-- Gestión de Unidades de Medida -->
+            <a href="gestion_medidas.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-red-400 to-red-600 p-6 text-white">
+                    <i class="bi bi-scale text-4xl mb-2 block"></i>
                 </div>
-            </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Medidas</h3>
+                    <p class="text-sm text-slate-600 mb-4">Administra las unidades de medida del sistema.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-red-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
 
             <!-- Gestión de Categorías -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-tags-fill" style="font-size: 3rem; color: #ffc107;"></i>
-                        <h5 class="card-title mt-3">Gestión de Categorías</h5>
-                        <p class="card-text">Administra las categorías disponibles en el sistema.</p>
-                        <a href="gestion_categorias.php" class="btn btn-warning">Ir</a>
-                    </div>
+            <a href="gestion_categorias.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-amber-400 to-amber-600 p-6 text-white">
+                    <i class="bi bi-tags-fill text-4xl mb-2 block"></i>
                 </div>
-            </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Categorías</h3>
+                    <p class="text-sm text-slate-600 mb-4">Administra las categorías disponibles en el sistema.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-amber-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
 
             <!-- Gestión de PQRS -->
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-chat-dots-fill" style="font-size: 3rem; color: #17a2b8;"></i>
-                        <h5 class="card-title mt-3">Gestión de PQRS</h5>
-                        <p class="card-text">Revisa y responde las PQRS enviadas por los usuarios.</p>
-                        <a href="admin_pqrs.php" class="btn btn-info">Ir</a>
-                    </div>
+            <a href="admin_pqrs.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-cyan-400 to-cyan-600 p-6 text-white">
+                    <i class="bi bi-chat-dots-fill text-4xl mb-2 block"></i>
                 </div>
-            </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de PQRS</h3>
+                    <p class="text-sm text-slate-600 mb-4">Revisa y responde las PQRS de los usuarios.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
+
+            <!-- Gestión de Pagos -->
+            <a href="gestion_pagos.php"
+               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div class="bg-gradient-to-br from-purple-400 to-purple-600 p-6 text-white">
+                    <i class="bi bi-credit-card text-4xl mb-2 block"></i>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Pagos</h3>
+                    <p class="text-sm text-slate-600 mb-4">Visualiza y gestiona todos los pagos del sistema.</p>
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 group-hover:gap-3 transition">
+                        Ir <i class="bi bi-arrow-right"></i>
+                    </span>
+                </div>
+            </a>
         </div>
     </div>
 
-    <footer class="bg-light text-center py-3 mt-5">
-        <p class="mb-0">&copy; 2025 Plaza Móvil. Todos los derechos reservados.</p>
+    <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
+        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
     </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

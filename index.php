@@ -1,7 +1,15 @@
 <?php
+require_once __DIR__ . '/config/session_timeout.php'; // Agregar al inicio
 require_once __DIR__ . '/config/app.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/config/database.php';
+
+if (!isset($pdo) || !($pdo instanceof PDO)) {
+    error_log('Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.');
+    http_response_code(500);
+    echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Error de conexión</title><meta name="viewport" content="width=device-width,initial-scale=1"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="'.htmlspecialchars(base_url("css/styles.css")).'"></head><body class="bg-slate-50 text-slate-900"><div class="mx-auto max-w-2xl p-8 text-center"><h1 class="text-2xl font-bold">Error de conexión a la base de datos</h1><p class="mt-4 text-slate-600">No se pudo establecer conexión con la base de datos. Revisa el log del servidor y las credenciales en <code>.env</code> o config.</p><p class="mt-4"><a href="'.htmlspecialchars(base_url()).'" class="inline-block rounded px-4 py-2 bg-emerald-600 text-white">Volver</a></p></div></body></html>';
+    exit;
+}
 
 if (!isset($_SESSION['user_id_rol'])) {
     header("Location: " . base_url("view/login.php"));
@@ -19,7 +27,7 @@ try {
             FROM productos p
             LEFT JOIN unidades_de_medida u ON p.id_unidad = u.id_unidad
             LEFT JOIN categoria c ON p.id_categoria = c.id_categoria
-            WHERE 1=1";
+            WHERE p.estado = 'activo'";
     $params = [];
 
     if ($id_categoria) {
@@ -111,62 +119,20 @@ $categoriasFiltro = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDE
         </div>
     </section>
 
-    <!-- Buscador y filtros -->
-    <section class="mx-auto max-w-6xl px-6 -mt-10">
-        <div class="rounded-2xl bg-white p-6 shadow-xl ring-1 ring-slate-100">
-            <form method="GET" class="grid grid-cols-1 gap-4 md:grid-cols-12">
-                <div class="md:col-span-5">
-                    <label class="text-sm font-semibold text-slate-600">Buscar</label>
-                    <div class="relative mt-2">
-                        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.65 5.65a7.5 7.5 0 0 0 11 11Z" /></svg>
-                        </span>
-                        <input name="busqueda" value="<?= htmlspecialchars($busqueda); ?>" class="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="Nombre o descripción..." />
-                    </div>
-                </div>
-
-                <div class="md:col-span-3">
-                    <label class="text-sm font-semibold text-slate-600">Categoría</label>
-                    <select name="categoria_filtro" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100">
-                        <option value="">Todas</option>
-                        <?php foreach ($categoriasFiltro as $cat): ?>
-                            <option value="<?= $cat['id_categoria']; ?>" <?= $categoria_filtro == $cat['id_categoria'] ? 'selected' : ''; ?>>
-                                <?= htmlspecialchars($cat['nombre']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm font-semibold text-slate-600">Precio mín.</label>
-                    <input type="number" name="precio_min" min="0" step="0.01" value="<?= htmlspecialchars($precio_min); ?>" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="0" />
-                </div>
-
-                <div class="md:col-span-2">
-                    <label class="text-sm font-semibold text-slate-600">Precio máx.</label>
-                    <input type="number" name="precio_max" min="0" step="0.01" value="<?= htmlspecialchars($precio_max); ?>" class="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 py-3 px-3 text-sm outline-none transition focus:border-emerald-400 focus:bg-white focus:ring-2 focus:ring-emerald-100" placeholder="100000" />
-                </div>
-
-                <div class="md:col-span-12 flex flex-wrap items-end justify-between gap-3">
-                    <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:-translate-y-0.5 hover:bg-emerald-500 focus:ring-2 focus:ring-emerald-200">
-                        <span>Buscar</span>
-                    </button>
-                    <?php if ($busqueda || $categoria_filtro || $precio_min || $precio_max): ?>
-                        <div class="flex flex-wrap gap-2 text-xs text-slate-500">
-                            <?php if ($busqueda): ?><span class="rounded-full bg-slate-100 px-3 py-1">Búsqueda: "<?= htmlspecialchars($busqueda); ?>"</span><?php endif; ?>
-                            <?php if ($categoria_filtro): ?>
-                                <?php $catNombre = $categoriasFiltro[array_search($categoria_filtro, array_column($categoriasFiltro, 'id_categoria'))]['nombre']; ?>
-                                <span class="rounded-full bg-slate-100 px-3 py-1">Categoría: <?= htmlspecialchars($catNombre); ?></span>
-                            <?php endif; ?>
-                            <?php if ($precio_min): ?><span class="rounded-full bg-slate-100 px-3 py-1">Precio mín: $<?= htmlspecialchars($precio_min); ?></span><?php endif; ?>
-                            <?php if ($precio_max): ?><span class="rounded-full bg-slate-100 px-3 py-1">Precio máx: $<?= htmlspecialchars($precio_max); ?></span><?php endif; ?>
-                            <span class="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-700"><?= $stmt->rowCount(); ?> productos</span>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </form>
+    <?php if ($busqueda || $categoria_filtro || $precio_min || $precio_max): ?>
+    <div class="mx-auto max-w-6xl px-6 mt-6">
+        <div class="flex flex-wrap gap-2 text-xs text-slate-600">
+            <?php if ($busqueda): ?><span class="rounded-full bg-white px-3 py-2 font-semibold shadow-sm ring-1 ring-slate-200">Búsqueda: "<?= htmlspecialchars($busqueda); ?>"</span><?php endif; ?>
+            <?php if ($categoria_filtro): ?>
+                <?php $catNombre = $categoriasFiltro[array_search($categoria_filtro, array_column($categoriasFiltro, 'id_categoria'))]['nombre'] ?? ''; ?>
+                <span class="rounded-full bg-white px-3 py-2 font-semibold shadow-sm ring-1 ring-slate-200">Categoría: <?= htmlspecialchars($catNombre); ?></span>
+            <?php endif; ?>
+            <?php if ($precio_min): ?><span class="rounded-full bg-white px-3 py-2 font-semibold shadow-sm ring-1 ring-slate-200">Precio mín: $<?= htmlspecialchars($precio_min); ?></span><?php endif; ?>
+            <?php if ($precio_max): ?><span class="rounded-full bg-white px-3 py-2 font-semibold shadow-sm ring-1 ring-slate-200">Precio máx: $<?= htmlspecialchars($precio_max); ?></span><?php endif; ?>
+            <span class="rounded-full bg-emerald-50 px-3 py-2 font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-100"><?= $stmt->rowCount(); ?> productos</span>
         </div>
-    </section>
+    </div>
+    <?php endif; ?>
 
     <!-- Productos -->
     <section class="mx-auto mt-10 max-w-6xl px-6">
@@ -179,7 +145,6 @@ $categoriasFiltro = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDE
         <?php if ($stmt->rowCount() > 0): ?>
             <div class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 <?php
-                $delay = 0.08; $idx = 0;
                 while ($producto = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $promedio = $promedios[$producto['id_producto']] ?? 0;
                 ?>
@@ -209,7 +174,7 @@ $categoriasFiltro = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDE
                         </div>
                     </div>
                 </a>
-                <?php $idx++; } ?>
+                <?php } ?>
             </div>
         <?php else: ?>
             <div class="mt-8 flex flex-col items-center rounded-2xl bg-white p-10 text-center shadow-lg ring-1 ring-slate-100">
@@ -273,13 +238,5 @@ $categoriasFiltro = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDE
     <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
         &copy; 2025 Plaza Móvil. Todos los derechos reservados.
     </footer>
-
-    <script>
-        function limpiarFiltro(tipo) {
-            const url = new URL(window.location.href);
-            url.searchParams.delete(tipo);
-            window.location.href = url.toString();
-        }
-    </script>
 </body>
 </html>
