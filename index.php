@@ -59,8 +59,41 @@ try {
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
 } catch (PDOException $e) {
-    error_log("Error BD en index.php: " . $e->getMessage());
-    die("Error al cargar los productos. Revisa el log del servidor.");
+    // Generar id de referencia
+    $refId = date('YmdHis') . '_' . substr(md5($e->getMessage()), 0, 8);
+
+    // Asegurar carpeta de logs
+    $logDir = __DIR__ . '/storage/logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0775, true);
+    }
+
+    // Recopilar información útil para depuración (no exponer credenciales en producción)
+    $debugInfo = [
+        'ref' => $refId,
+        'timestamp' => date('c'),
+        'message' => $e->getMessage(),
+        'file' => $e->getFile() . ':' . $e->getLine(),
+        'sql' => isset($sql) ? $sql : null,
+        'params' => isset($params) ? $params : null,
+        'php_version' => PHP_VERSION,
+        'server' => $_SERVER['HTTP_HOST'] ?? php_uname(),
+    ];
+
+    // Guardar detalle en archivo de log exclusivo
+    $logFile = $logDir . "/exception_{$refId}.log";
+    @file_put_contents($logFile, print_r($debugInfo, true));
+
+    // Registrar en error_log por seguridad
+    error_log("Index.php - error ref {$refId}: " . $e->getMessage() . " (detalles en $logFile)");
+
+    // Mostrar mensaje al usuario; en development mostrar detalle completo
+    if (function_exists('env') && env('APP_ENV', 'production') === 'development') {
+        echo "<div style=\"padding:20px;margin:20px;background:#fff;border-radius:8px;border:1px solid #eee;max-width:900px;margin-left:auto;margin-right:auto;font-family:monospace;white-space:pre-wrap;\">DEBUG ERROR (ref: {$refId})\n\n" . htmlspecialchars(print_r($debugInfo, true)) . "</div>";
+    } else {
+        echo '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Error</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-slate-50 text-slate-900"><div class="mx-auto max-w-2xl p-8 text-center"><h1 class="text-2xl font-bold">Error al cargar los productos</h1><p class="mt-4 text-slate-600">Se ha generado un reporte de error (ref: ' . htmlspecialchars($refId) . '). Contacta al administrador indicando ese código.</p></div></body></html>';
+    }
+    exit;
 }
 
 $promedios = [];
