@@ -374,3 +374,29 @@ Stack trace:
 [09-Dec-2025 06:10:41 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.9' (using password: YES)
 [09-Dec-2025 06:10:41 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
 [09-Dec-2025 14:21:58 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.4' (using password: YES)
+[09-Dec-2025 15:10:50 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.6' (using password: YES)
+[09-Dec-2025 15:10:50 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:11:26 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.5' (using password: YES)
+[09-Dec-2025 15:11:26 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:11:55 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.3' (using password: YES)
+[09-Dec-2025 15:11:55 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:11:58 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:11:58 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:12:00 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.4' (using password: YES)
+[09-Dec-2025 15:12:00 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:12:01 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:12:01 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:12:03 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:12:03 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:12:06 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:12:06 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:20:28 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.2' (using password: YES)
+[09-Dec-2025 15:20:28 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:20:43 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:20:43 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:20:57 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.7' (using password: YES)
+[09-Dec-2025 15:20:57 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:20:58 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.3' (using password: YES)
+[09-Dec-2025 15:20:58 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 15:21:27 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.8' (using password: YES)
+[09-Dec-2025 15:21:27 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.

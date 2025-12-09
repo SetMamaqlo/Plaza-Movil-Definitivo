@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/app.php';
 session_start();
 require_once '../config/database.php';
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 // Validar que sea agricultor
 if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 3) {

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config/app.php';
 require_once '../config/database.php';
 require_once '../model/resena_model.php';
 session_start();
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 if (!isset($_GET['id_producto'])) {
     echo "Producto no encontrado.";

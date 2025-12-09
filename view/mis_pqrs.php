@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../config/app.php';
 session_start();
 require_once '../model/pqrs_model.php';
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 if (!isset($_SESSION['user_id_usuario'])) {
     header('Location: login.php');

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 session_start();
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 require_once '../controller/gestion_categorias.php';
 require_once '../model/categorias_model.php';
 

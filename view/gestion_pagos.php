@@ -1,7 +1,7 @@
 <?php
 require_once '../config/database.php';
 session_start();
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 1) {
     header('Location: login.php');

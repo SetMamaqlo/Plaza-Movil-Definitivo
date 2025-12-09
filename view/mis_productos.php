@@ -4,7 +4,7 @@ session_start();
 require_once '../config/database.php';
 require_once '../controller/medidas_controller.php';
 require_once '../controller/gestion_categorias.php';
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 // Validar sesión y rol
 if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 3) {

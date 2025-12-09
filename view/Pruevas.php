@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id_usuario'])) {
 }
 
 require_once '../config/database.php';
-require_once __DIR__ . '/config/session_timeout.php';
+require_once __DIR__ . '/../config/session_timeout.php';
 
 $user_id_usuario = $_SESSION['user_id_usuario'];
 
