@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-11-2025 a las 22:38:57
+-- Tiempo de generación: 03-12-2025 a las 08:28:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -125,8 +125,7 @@ INSERT INTO `carrito_detalle` (`id_detalle`, `id_carrito`, `id_producto`, `canti
 (15, 4, 18, 1),
 (19, 5, 19, 2),
 (20, 5, 20, 1),
-(21, 6, 19, 5),
-(22, 6, 18, 1),
+(21, 6, 19, 2),
 (34, 7, 27, 3),
 (38, 15, 22, 1);
 
@@ -245,6 +244,26 @@ INSERT INTO `pagos` (`id_pago`, `id_venta`, `proveedor`, `transaccion_id`, `mont
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `email` varchar(255) DEFAULT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `password_resets`
+--
+
+INSERT INTO `password_resets` (`email`, `token`, `expires_at`, `created_at`) VALUES
+('felixxd722@gmail.com', '2b0882aff7ca96c7653f69bb7357a8b4d3fd58bd4b1b86b16a3ce3ff7c912699', '2025-12-03 09:17:39', '2025-12-03 02:17:39');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `pedidos`
 --
 
@@ -272,7 +291,7 @@ INSERT INTO `pedidos` (`id_pedido`, `id_usuario`, `fecha`, `estado`, `id_detalle
 (9, 12, '2025-09-22', 'pendiente', NULL),
 (10, 19, '2025-09-22', 'pendiente', NULL),
 (11, 12, '2025-09-22', 'pendiente', NULL),
-(12, 12, '2025-09-22', 'pendiente', NULL),
+(12, 12, '2025-09-22', 'aprobado', NULL),
 (13, 12, '2025-09-22', 'pendiente', NULL),
 (14, 12, '2025-09-22', 'pendiente', NULL),
 (15, 12, '2025-09-22', 'pendiente', NULL),
@@ -384,7 +403,7 @@ CREATE TABLE `pqrs` (
 --
 
 INSERT INTO `pqrs` (`id_pqrs`, `id_usuario`, `tipo`, `asunto`, `descripcion`, `fecha`, `estado`, `respuesta`, `fecha_respuesta`, `adjunto`) VALUES
-(1, 12, 'queja', 'queja', 'me quejo', '2025-09-22', 'pendiente', NULL, NULL, NULL),
+(1, 12, 'queja', 'queja', 'me quejo', '2025-09-22', 'respondido', 'Para que se queja?', '2025-12-03', NULL),
 (2, 12, 'peticion', 'proyecto listo ', 'para manana', '2025-09-22', 'respondido', 'ya esta listo', '2025-09-22', NULL),
 (3, 22, 'queja', 'quejarme', 'me duele el pie', '2025-09-23', 'respondido', 'no sea sapa ', '2025-09-22', NULL);
 
@@ -404,25 +423,26 @@ CREATE TABLE `productos` (
   `precio_unitario` int(10) DEFAULT NULL,
   `id_unidad` int(10) DEFAULT NULL,
   `foto` varchar(100) DEFAULT NULL,
-  `fecha_publicacion` date DEFAULT NULL
+  `fecha_publicacion` date DEFAULT NULL,
+  `estado` enum('activo','inactivo') DEFAULT 'activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id_producto`, `id_agricultor`, `id_categoria`, `descripcion`, `nombre`, `stock`, `precio_unitario`, `id_unidad`, `foto`, `fecha_publicacion`) VALUES
-(13, 4, 1, 'mango manguito', 'Mango  ', 497, 17000, 2, '68be360ba62ad_mango tomi.webp', '2025-09-10'),
-(18, 4, 2, 'papa pareja ideal para salar, acompañamiento perfecto para los asados del domingo después de misa.', 'papa', 500, 70000, 4, '68c0fab3a72f3_mucha papa.jpg', '2025-09-23'),
-(19, 4, 5, 'freza directamente traída del campo, la mejor freza de la región. ', 'freza', 495, 10000, 2, '68c1184d6de9d_freza.jpeg', '2025-09-10'),
-(20, 6, 2, 'los mejores frijoles bola roja que te puedes comer', 'frijoles', 998, 5000, 2, '68c119e129caa_3000.jpg', '2025-09-10'),
-(21, 7, 5, 'Limones verdes', 'Limon', 499, 2000, 3, '68c1706eaa8a2_Limon-600x473.jpg', '2025-09-10'),
-(22, 7, 1, 'Muy moradas', 'Berenjenas', 300, 5000, 3, '68c170dd7391a_Berenjena-1.jpg', '2025-09-10'),
-(23, 7, 1, 'Zanahorias', 'Zanahorias', 2000, 5000, 2, '68c1712b65810_carousel1.jpg', '2025-09-10'),
-(24, 7, 2, 'Bola Roja', 'Frijoles', 498, 2000, 3, '68c17175c5a3a_68c0fadc338e9_pexels-arina-krasnikova-6316686.jpg', '2025-09-10'),
-(25, 7, 1, 'Esta verde', 'Brocoli', 300, 5000, 2, '68c171b00328b_68c126723ccea_pexels-cup-of-couple-7657091.jpg', '2025-09-10'),
-(26, 7, 5, 'Se llaman naranjas a pesar de que son amarillas', 'Naranjas', 500, 6000, 2, '68c174f9eaeb4_carousel3.jpg', '2025-09-10'),
-(27, 7, 5, 'Son rojas y ricas', 'Manzanas', 299, 2800, 3, '68c1759173cb0_Manzanas.jpg', '2025-09-10');
+INSERT INTO `productos` (`id_producto`, `id_agricultor`, `id_categoria`, `descripcion`, `nombre`, `stock`, `precio_unitario`, `id_unidad`, `foto`, `fecha_publicacion`, `estado`) VALUES
+(13, 4, 1, 'mango manguito', 'Mango  ', 497, 17000, 2, '68be360ba62ad_mango tomi.webp', '2025-09-10', 'activo'),
+(18, 4, 2, 'papa pareja ideal para salar, acompañamiento perfecto para los asados del domingo después de misa.', 'papa', 500, 70000, 4, '68c0fab3a72f3_mucha papa.jpg', '2025-09-23', 'activo'),
+(19, 4, 5, 'freza directamente traída del campo, la mejor freza de la región. ', 'freza', 495, 10000, 2, '68c1184d6de9d_freza.jpeg', '2025-09-10', 'activo'),
+(20, 6, 2, 'los mejores frijoles bola roja que te puedes comer', 'frijoles', 998, 5000, 2, '68c119e129caa_3000.jpg', '2025-09-10', 'activo'),
+(21, 7, 5, 'Limones verdes', 'Limon', 499, 2000, 3, '68c1706eaa8a2_Limon-600x473.jpg', '2025-09-10', 'activo'),
+(22, 7, 1, 'Muy moradas', 'Berenjenas', 300, 5000, 3, '68c170dd7391a_Berenjena-1.jpg', '2025-09-10', 'activo'),
+(23, 7, 1, 'Zanahorias', 'Zanahorias', 2000, 5000, 2, '68c1712b65810_carousel1.jpg', '2025-09-10', 'activo'),
+(24, 7, 2, 'Bola Roja', 'Frijoles', 498, 2000, 3, '68c17175c5a3a_68c0fadc338e9_pexels-arina-krasnikova-6316686.jpg', '2025-09-10', 'activo'),
+(25, 7, 1, 'Esta verde', 'Brocoli', 300, 5000, 2, '68c171b00328b_68c126723ccea_pexels-cup-of-couple-7657091.jpg', '2025-09-10', 'activo'),
+(26, 7, 5, 'Se llaman naranjas a pesar de que son amarillas', 'Naranjas', 500, 6000, 2, '68c174f9eaeb4_carousel3.jpg', '2025-09-10', 'activo'),
+(27, 7, 5, 'Son rojas y ricas', 'Manzanas', 299, 2800, 3, '68c1759173cb0_Manzanas.jpg', '2025-09-10', 'activo');
 
 -- --------------------------------------------------------
 
@@ -438,6 +458,13 @@ CREATE TABLE `producto_resenas` (
   `comentario` varchar(250) DEFAULT NULL,
   `fecha` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `producto_resenas`
+--
+
+INSERT INTO `producto_resenas` (`id_resena`, `id_producto`, `id_usuario`, `estrellas`, `comentario`, `fecha`) VALUES
+(1, 26, 20, 5, 'Me gustan demasiado', '2025-12-03 01:08:38');
 
 -- --------------------------------------------------------
 
@@ -760,13 +787,13 @@ ALTER TABLE `pagos`
 -- AUTO_INCREMENT de la tabla `pedidos`
 --
 ALTER TABLE `pedidos`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido_detalle`
 --
 ALTER TABLE `pedido_detalle`
-  MODIFY `id_pedido_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id_pedido_detalle` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `pqrs`
@@ -784,7 +811,7 @@ ALTER TABLE `productos`
 -- AUTO_INCREMENT de la tabla `producto_resenas`
 --
 ALTER TABLE `producto_resenas`
-  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_resena` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `unidades_de_medida`

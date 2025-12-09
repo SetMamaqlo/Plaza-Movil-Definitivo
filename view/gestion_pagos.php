@@ -10,12 +10,16 @@ if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 1) {
 
 $stmt = $pdo->query("
     SELECT 
-        p.id_pago, p.fecha_pago, p.monto_total, p.metodo, p.estado,
+        p.id_pago,
+        p.fecha_pago,
+        COALESCE(p.monto_total, p.monto) AS monto_total,
+        p.metodo,
+        p.estado,
         u.nombre_completo AS cliente,
         ped.id_pedido
     FROM pagos p
-    JOIN usuarios u ON u.id_usuario = p.id_usuario
     JOIN pedidos ped ON ped.id_pedido = p.id_pedido
+    JOIN usuarios u ON u.id_usuario = ped.id_usuario
     ORDER BY p.fecha_pago DESC
 ");
 $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);

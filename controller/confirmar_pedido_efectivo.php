@@ -25,11 +25,11 @@ try {
     $stmt->execute([$id_pedido]);
 
     // Registrar la transacción de pago en efectivo
-    $stmt = $pdo->prepare("
-        INSERT INTO pagos (id_pedido, id_usuario, monto_total, metodo, fecha_pago, estado)
-        VALUES (?, ?, ?, 'Efectivo', NOW(), 'pendiente')
+$stmt = $pdo->prepare("
+        INSERT INTO pagos (id_pedido, monto, moneda, metodo, fecha_pago, estado)
+        VALUES (?, ?, 'COP', 'Efectivo', NOW(), 'pendiente')
     ");
-    $stmt->execute([$id_pedido, $id_usuario, $monto_total]);
+$stmt->execute([$id_pedido, $monto_total]);
     
     // Obtener el ID del pago insertado
     $id_pago = $pdo->lastInsertId();

@@ -39,7 +39,7 @@ if (!empty($payment_id) && is_numeric($payment_id)) {
         $stmt->execute([$estado, $metodo, $payment_id, $fecha_pago, $preference_id]);
 
         // 2. Obtener pedido asociado
-        $stmt = $pdo->prepare("SELECT id_pedido, id_usuario FROM pagos INNER JOIN pedidos USING(id_pedido) WHERE preference_id = ? LIMIT 1");
+        $stmt = $pdo->prepare("SELECT ped.id_pedido, ped.id_usuario FROM pagos p INNER JOIN pedidos ped ON ped.id_pedido = p.id_pedido WHERE p.preference_id = ? LIMIT 1");
         $stmt->execute([$preference_id]);
         $pago = $stmt->fetch(PDO::FETCH_ASSOC);
 

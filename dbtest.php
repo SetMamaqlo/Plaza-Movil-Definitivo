@@ -6,7 +6,8 @@ error_reporting(E_ALL);
 
 $host = env('DB_HOST');
 $port = env('DB_PORT');
-$db   = env('DB_NAME');
+// Compatibilidad: DB_DATABASE es el nombre usado en Render/Railway
+$db   = env('DB_DATABASE', env('DB_NAME'));
 $user = env('DB_USERNAME');
 $pass = env('DB_PASSWORD');
 
