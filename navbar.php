@@ -420,35 +420,9 @@ if (isset($_SESSION['user_id_rol'])) {
     <span class="hidden sm:inline">Atrás</span>
 </button>
 
-<!-- Botones flotantes -->
-<div id="chatbot-float-btn" class="fixed bottom-28 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-slate-800 text-white shadow-xl ring-4 ring-white/60 transition hover:bg-emerald-600" title="Chatbot">
-    <i class="bi bi-robot text-2xl"></i>
-</div>
-
 <div id="pqrs-float-btn" class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-xl ring-4 ring-white/60 transition hover:bg-emerald-500" title="PQRS">
     <i class="bi bi-chat-dots text-2xl"></i>
 </div>
-
-<!-- Chatbot panel -->
-<link rel="stylesheet" href="<?= base_url() ?>/css/chatbot.css">
-<div id="chatbot-container" class="fixed inset-y-10 right-6 z-50 hidden w-80 flex-col overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-slate-200">
-    <div class="flex items-center justify-between bg-emerald-600 px-4 py-3 text-white">
-        <span class="flex items-center gap-2 font-semibold"><i class="bi bi-robot"></i> Chatbot</span>
-        <button id="chatbot-close-btn" type="button" class="text-lg font-bold hover:text-white/80">&times;</button>
-    </div>
-    <div id="chatbot-body" class="flex-1 space-y-2 overflow-y-auto bg-slate-50 px-3 py-3 text-sm">
-        <div class="message bot-message rounded-xl bg-white px-3 py-2 shadow-sm ring-1 ring-slate-100">¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte?</div>
-    </div>
-    <div class="border-t border-slate-100 bg-white px-3 py-3">
-        <form class="flex gap-2">
-            <input id="chatbot-input" type="text" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" placeholder="Escribe tu mensaje..." autocomplete="off">
-            <button id="chatbot-send-btn" type="button" class="rounded-lg bg-emerald-600 px-3 py-2 text-white transition hover:bg-emerald-500">
-                <i class="bi bi-send"></i>
-            </button>
-        </form>
-    </div>
-</div>
-<script src="<?= base_url() ?>/controller/chatbot.js"></script>
 
 <!-- Modal PQRS (Tailwind) -->
 <div id="modalPQRS" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur">
@@ -511,16 +485,6 @@ if (isset($_SESSION['user_id_rol'])) {
         navbarToggle.addEventListener('click', () => {
             navbarMobilePanel.classList.toggle('hidden');
         });
-    }
-
-    const chatbotBtn = document.getElementById('chatbot-float-btn');
-    const chatbotPanel = document.getElementById('chatbot-container');
-    const chatbotClose = document.getElementById('chatbot-close-btn');
-    if (chatbotBtn && chatbotPanel) {
-        chatbotBtn.addEventListener('click', () => chatbotPanel.classList.toggle('hidden'));
-    }
-    if (chatbotClose && chatbotPanel) {
-        chatbotClose.addEventListener('click', () => chatbotPanel.classList.add('hidden'));
     }
 
     const pqrsBtn = document.getElementById('pqrs-float-btn');
