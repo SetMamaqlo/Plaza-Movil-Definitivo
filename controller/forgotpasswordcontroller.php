@@ -5,7 +5,7 @@ require_once '../model/usermodel.php';
 require_once '../config/app.php';
 
 /**
- * Envío simple por SMTP (o mail() como respaldo).
+ * Envio simple por SMTP (o mail() como respaldo).
  * Requiere en .env:
  * MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD,
  * MAIL_ENCRYPTION (tls|ssl|none), MAIL_FROM_ADDRESS, MAIL_FROM_NAME
@@ -18,10 +18,10 @@ function sendResetEmail(string $to, string $toName, string $resetLink): bool
     $pass = env('MAIL_PASSWORD');
     $encryption = strtolower(env('MAIL_ENCRYPTION', 'tls'));
     $from = env('MAIL_FROM_ADDRESS', 'no-reply@example.com');
-    $fromName = env('MAIL_FROM_NAME', 'Plaza Móvil');
+    $fromName = env('MAIL_FROM_NAME', 'Plaza Movil');
 
-    $subject = 'Recuperación de contraseña';
-    $body = "Hola {$toName},\n\nHas solicitado recuperar tu contraseña. Ingresa al siguiente enlace antes de una hora:\n{$resetLink}\n\nSi no solicitaste este cambio, ignora este mensaje.";
+    $subject = 'Recuperacion de contrasena';
+    $body = "Hola {$toName},\n\nHas solicitado recuperar tu contrasena. Ingresa al siguiente enlace antes de una hora:\n{$resetLink}\n\nSi no solicitaste este cambio, ignora este mensaje.";
 
     // Si no hay SMTP configurado, intentar mail() como respaldo
     if (!$host || !$user || !$pass) {
@@ -30,7 +30,7 @@ function sendResetEmail(string $to, string $toName, string $resetLink): bool
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
         $ok = @mail($to, $subject, $body, $headers);
         if (!$ok) {
-            error_log('No se pudo enviar correo de recuperación con mail()');
+            error_log('No se pudo enviar correo de recuperacion con mail()');
         }
         return $ok;
     }
@@ -154,8 +154,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($model->storeResetToken($email, $hashed, $expiresAt)) {
             $resetLink = base_url('view/reset_password.php?token=' . urlencode($token));
-            if (!sendResetEmail($email, $user['nombre_completo'], $resetLink)) {
-                error_log('No se pudo enviar el correo de recuperación a ' . $email);
+            $sent = sendResetEmail($email, $user['nombre_completo'], $resetLink);
+            if (!$sent) {
+                error_log('No se pudo enviar el correo de recuperacion a ' . $email . '. Enlace: ' . $resetLink);
+                $logDir = __DIR__ . '/../storage/logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0777, true);
+                }
+                file_put_contents($logDir . '/password_reset.log', '[' . date('c') . "] {$email} => {$resetLink}\n", FILE_APPEND);
             }
         }
     }

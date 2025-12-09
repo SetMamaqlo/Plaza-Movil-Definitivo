@@ -1,7 +1,7 @@
 <?php
-
 require_once '../config/conexion.php';
 require_once '../model/usermodel.php';
+require_once '../config/app.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = trim($_POST['token'] ?? '');

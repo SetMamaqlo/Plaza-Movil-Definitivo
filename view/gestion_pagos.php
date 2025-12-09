@@ -10,17 +10,22 @@ if (!isset($_SESSION['user_id_usuario']) || $_SESSION['user_id_rol'] != 1) {
 
 $stmt = $pdo->query("
     SELECT 
-        p.id_pago,
-        p.fecha_pago,
-        COALESCE(p.monto_total, p.monto) AS monto_total,
-        p.metodo,
-        p.estado,
+        ped.id_pedido,
+        ped.fecha,
+        ped.estado AS estado_pedido,
         u.nombre_completo AS cliente,
-        ped.id_pedido
-    FROM pagos p
-    JOIN pedidos ped ON ped.id_pedido = p.id_pedido
+        u.email AS cliente_email,
+        COALESCE(SUM(pd.cantidad * pd.precio_unitario),0) AS total_pedido,
+        p.id_pago,
+        p.metodo,
+        p.estado AS estado_pago,
+        p.fecha_pago
+    FROM pedidos ped
     JOIN usuarios u ON u.id_usuario = ped.id_usuario
-    ORDER BY p.fecha_pago DESC
+    LEFT JOIN pedido_detalle pd ON pd.id_pedido = ped.id_pedido
+    LEFT JOIN pagos p ON p.id_pedido = ped.id_pedido
+    GROUP BY ped.id_pedido
+    ORDER BY ped.fecha DESC
 ");
 $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -55,59 +60,73 @@ $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php if (empty($pagos)): ?>
                 <div class="rounded-2xl bg-slate-50 p-8 text-center">
                     <i class="bi bi-inbox text-6xl text-slate-300 mb-4 block"></i>
-                    <p class="text-lg text-slate-600">No hay pagos registrados en el sistema.</p>
+                    <p class="text-lg text-slate-600">No hay pedidos registrados.</p>
                 </div>
             <?php else: ?>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-purple-50 border-b-2 border-purple-200">
                             <tr>
-                                <th class="px-4 py-3 text-left font-semibold">ID Pago</th>
                                 <th class="px-4 py-3 text-left font-semibold">Pedido</th>
                                 <th class="px-4 py-3 text-left font-semibold">Cliente</th>
                                 <th class="px-4 py-3 text-left font-semibold">Fecha</th>
-                                <th class="px-4 py-3 text-right font-semibold">Monto</th>
+                                <th class="px-4 py-3 text-right font-semibold">Total pedido</th>
+                                <th class="px-4 py-3 text-left font-semibold">Estado pedido</th>
+                                <th class="px-4 py-3 text-left font-semibold">Pago</th>
                                 <th class="px-4 py-3 text-left font-semibold">Método</th>
-                                <th class="px-4 py-3 text-center font-semibold">Estado</th>
                                 <th class="px-4 py-3 text-center font-semibold">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             <?php foreach ($pagos as $pago): ?>
+                                <?php
+                                    $estadoPedidoClase = match ($pago['estado_pedido']) {
+                                        'entregado' => 'bg-green-100 text-green-800',
+                                        'aprobado' => 'bg-blue-100 text-blue-800',
+                                        'cancelado' => 'bg-red-100 text-red-800',
+                                        default => 'bg-yellow-100 text-yellow-800',
+                                    };
+                                    $estadoPago = $pago['estado_pago'] ?? 'pendiente';
+                                    $estadoPagoClase = match ($estadoPago) {
+                                        'completado' => 'bg-green-100 text-green-800',
+                                        'cancelado' => 'bg-red-100 text-red-800',
+                                        default => 'bg-yellow-100 text-yellow-800',
+                                    };
+                                ?>
                                 <tr class="hover:bg-slate-50">
-                                    <td class="px-4 py-3 font-semibold text-slate-900"><?= htmlspecialchars($pago['id_pago']); ?></td>
-                                    <td class="px-4 py-3">#<?= htmlspecialchars($pago['id_pedido']); ?></td>
-                                    <td class="px-4 py-3"><?= htmlspecialchars($pago['cliente']); ?></td>
-                                    <td class="px-4 py-3"><?= htmlspecialchars($pago['fecha_pago']); ?></td>
-                                    <td class="px-4 py-3 text-right font-bold text-emerald-600">$<?= number_format($pago['monto_total'], 2); ?></td>
+                                    <td class="px-4 py-3 font-semibold text-slate-900">#<?= htmlspecialchars($pago['id_pedido']); ?></td>
+                                    <td class="px-4 py-3">
+                                        <p class="font-semibold text-slate-800"><?= htmlspecialchars($pago['cliente']); ?></p>
+                                        <p class="text-xs text-slate-500"><?= htmlspecialchars($pago['cliente_email']); ?></p>
+                                    </td>
+                                    <td class="px-4 py-3"><?= htmlspecialchars($pago['fecha']); ?></td>
+                                    <td class="px-4 py-3 text-right font-bold text-emerald-600">$<?= number_format($pago['total_pedido'], 2); ?></td>
+                                    <td class="px-4 py-3">
+                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $estadoPedidoClase; ?>">
+                                            <?= ucfirst(htmlspecialchars($pago['estado_pedido'])); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $estadoPagoClase; ?>">
+                                            <?= ucfirst(htmlspecialchars($estadoPago)); ?>
+                                        </span>
+                                    </td>
                                     <td class="px-4 py-3">
                                         <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
-                                            <i class="bi bi-cash-coin me-1"></i> <?= htmlspecialchars($pago['metodo']); ?>
+                                            <i class="bi bi-cash-coin me-1"></i> <?= $pago['metodo'] ? htmlspecialchars($pago['metodo']) : 'Efectivo'; ?>
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center">
-                                        <?php
-                                        $estadoClase = match ($pago['estado']) {
-                                            'completado' => 'bg-green-100 text-green-800',
-                                            'cancelado' => 'bg-red-100 text-red-800',
-                                            default => 'bg-yellow-100 text-yellow-800',
-                                        };
-                                        ?>
-                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $estadoClase; ?>">
-                                            <?= ucfirst(htmlspecialchars($pago['estado'])); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <?php if ($pago['estado'] === 'pendiente'): ?>
+                                        <?php if ($estadoPago === 'pendiente' && !empty($pago['id_pago'])): ?>
                                             <form action="../controller/actualizar_estado_pago.php" method="POST" class="inline">
                                                 <input type="hidden" name="id_pago" value="<?= $pago['id_pago']; ?>">
                                                 <input type="hidden" name="estado" value="completado">
-                                                <button type="submit" class="rounded-lg bg-green-600 text-white px-3 py-1 text-xs font-semibold hover:bg-green-700" onclick="return confirm('¿Marcar como completado?');">
+                                                <button type="submit" class="rounded-lg bg-green-600 text-white px-3 py-1 text-xs font-semibold hover:bg-green-700" onclick="return confirm('¿Marcar pago como completado?');">
                                                     <i class="bi bi-check-circle me-1"></i>Completar
                                                 </button>
                                             </form>
                                         <?php else: ?>
-                                            <span class="text-xs text-slate-500"><i class="bi bi-check-all me-1"></i><?= ucfirst(htmlspecialchars($pago['estado'])); ?></span>
+                                            <span class="text-xs text-slate-500"><i class="bi bi-check-all me-1"></i>Sin acciones</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

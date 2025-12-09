@@ -5,7 +5,9 @@ if (!isset($_SESSION['user_id_usuario'])) {
     exit();
 }
 
+require_once __DIR__ . '/../config/app.php';
 require_once '../config/database.php';
+require_once '../model/NotificacionModel.php';
 
 $id_pedido = $_GET['id_pedido'] ?? null;
 $estado = $_GET['estado'] ?? null;
@@ -41,6 +43,21 @@ if ($result['tiene_productos'] > 0 && in_array($estado, $estadosPermitidos, true
     };
     $pagoStmt = $pdo->prepare('UPDATE pagos SET estado = ? WHERE id_pedido = ?');
     $pagoStmt->execute([$estadoPago, $id_pedido]);
+
+    // Notificar comprador sobre el cambio de estado
+    $usuarioPedidoStmt = $pdo->prepare('SELECT id_usuario FROM pedidos WHERE id_pedido = ? LIMIT 1');
+    $usuarioPedidoStmt->execute([$id_pedido]);
+    $pedidoUsuario = $usuarioPedidoStmt->fetch(PDO::FETCH_ASSOC);
+    if ($pedidoUsuario) {
+        $noti = new NotificacionModel($pdo);
+        $mensajeEstado = match ($estado) {
+            'aprobado' => "Tu pedido #{$id_pedido} fue aprobado por el agricultor.",
+            'entregado' => "Tu pedido #{$id_pedido} fue marcado como entregado.",
+            'cancelado' => "Tu pedido #{$id_pedido} fue cancelado.",
+            default => "El estado de tu pedido #{$id_pedido} cambió a {$estado}.",
+        };
+        $noti->crear((int)$pedidoUsuario['id_usuario'], $mensajeEstado, base_url('view/historialpedidos.php'));
+    }
 
     $_SESSION['success'] = 'Estado del pedido actualizado correctamente';
 } else {

@@ -1,6 +1,8 @@
 <?php
 session_start();
+require_once __DIR__ . '/../config/app.php';
 require_once '../config/conexion.php';
+require_once '../model/NotificacionModel.php';
 
 if (!isset($_SESSION['user_id_usuario'])) {
     header("Location: ../view/login.php");
@@ -30,9 +32,9 @@ try {
     $stmt->execute([$id_usuario]);
     $id_pedido = $pdo->lastInsertId();
 
-    // Pasar los productos del carrito al pedido
+    // Pasar los productos del carrito al pedido y recolectar agricultores
     $stmtDetalles = $pdo->prepare("
-        SELECT cd.id_producto, cd.cantidad, p.precio_unitario, p.id_unidad
+        SELECT cd.id_producto, cd.cantidad, p.precio_unitario, p.id_unidad, p.id_agricultor
         FROM carrito_detalle cd
         INNER JOIN productos p ON cd.id_producto = p.id_producto
         WHERE cd.id_carrito = ?
@@ -50,6 +52,7 @@ try {
     ");
 
     $total = 0;
+    $agricultores = [];
     foreach ($detalles as $d) {
         $stmtInsert->execute([
             $id_pedido,
@@ -59,7 +62,11 @@ try {
             $d['id_unidad']
         ]);
         $total += $d['precio_unitario'] * $d['cantidad'];
+        if (!empty($d['id_agricultor'])) {
+            $agricultores[] = (int)$d['id_agricultor'];
+        }
     }
+    $agricultores = array_unique($agricultores);
 
     // Registrar pago en efectivo pendiente
     $stmtPago = $pdo->prepare("
@@ -67,6 +74,19 @@ try {
         VALUES (?, 'Efectivo', NULL, ?, 'COP', 'pendiente', 'Efectivo', NOW())
     ");
     $stmtPago->execute([$id_pedido, $total]);
+
+    // Notificaciones: comprador y agricultores
+    $notiModel = new NotificacionModel($pdo);
+    $notiModel->crear($id_usuario, "Tu pedido #{$id_pedido} fue creado y está pendiente.", base_url('view/historialpedidos.php'));
+
+    if ($agricultores) {
+        $agriStmt = $pdo->prepare("SELECT a.id_agricultor, u.id_usuario FROM agricultor a INNER JOIN usuarios u ON a.id_usuario = u.id_usuario WHERE a.id_agricultor IN (" . implode(',', array_fill(0, count($agricultores), '?')) . ")");
+        $agriStmt->execute($agricultores);
+        $agriUsuarios = $agriStmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($agriUsuarios as $ag) {
+            $notiModel->crear((int)$ag['id_usuario'], "Nuevo pedido #{$id_pedido} pendiente de aprobación.", base_url('view/pedidos_agricultor.php'));
+        }
+    }
 
     // Vaciar carrito del usuario
     $stmt = $pdo->prepare("DELETE FROM carrito_detalle WHERE id_carrito = ?");

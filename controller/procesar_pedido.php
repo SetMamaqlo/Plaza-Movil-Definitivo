@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once '../config/conexion.php'; // Crea $pdo
+require_once __DIR__ . '/../config/app.php';
+require_once '../model/NotificacionModel.php';
 
 if (!isset($_SESSION['user_id_usuario'])) {
     header("Location: login.php");
@@ -22,13 +24,14 @@ try {
     $id_pedido = $pdo->lastInsertId();
 
     // 2. Insertar detalles del pedido desde la sesión
-    $stmtProducto = $pdo->prepare("SELECT precio_unitario, id_unidad FROM productos WHERE id_producto = ?");
+    $stmtProducto = $pdo->prepare("SELECT precio_unitario, id_unidad, id_agricultor FROM productos WHERE id_producto = ?");
     $stmtDetalle = $pdo->prepare("
         INSERT INTO pedido_detalle (id_pedido, id_producto, cantidad, precio_unitario, id_unidad)
         VALUES (?, ?, ?, ?, ?)
     ");
 
     $total = 0;
+    $agricultores = [];
     foreach ($_SESSION['carrito'] as $item) {
         $id_producto = $item['id_producto'];
         $cantidad = $item['cantidad'];
@@ -44,7 +47,11 @@ try {
 
         $stmtDetalle->execute([$id_pedido, $id_producto, $cantidad, $precio_unitario, $id_unidad]);
         $total += $precio_unitario * $cantidad;
+        if (!empty($producto['id_agricultor'])) {
+            $agricultores[] = (int)$producto['id_agricultor'];
+        }
     }
+    $agricultores = array_unique($agricultores);
 
     // Vaciar carrito después de generar pedido
     unset($_SESSION['carrito']);
@@ -55,6 +62,19 @@ try {
         VALUES (?, 'Efectivo', NULL, ?, 'COP', 'pendiente', 'Efectivo', NOW())
     ");
     $stmtPago->execute([$id_pedido, $total]);
+
+    // Notificaciones: comprador y agricultores
+    $notiModel = new NotificacionModel($pdo);
+    $notiModel->crear($id_usuario, "Tu pedido #{$id_pedido} fue creado y está pendiente.", base_url('view/historialpedidos.php'));
+
+    if ($agricultores) {
+        $agriStmt = $pdo->prepare("SELECT a.id_agricultor, u.id_usuario FROM agricultor a INNER JOIN usuarios u ON a.id_usuario = u.id_usuario WHERE a.id_agricultor IN (" . implode(',', array_fill(0, count($agricultores), '?')) . ")");
+        $agriStmt->execute($agricultores);
+        $agriUsuarios = $agriStmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($agriUsuarios as $ag) {
+            $notiModel->crear((int)$ag['id_usuario'], "Nuevo pedido #{$id_pedido} pendiente de aprobación.", base_url('view/pedidos_agricultor.php'));
+        }
+    }
 
     $pdo->commit();
 

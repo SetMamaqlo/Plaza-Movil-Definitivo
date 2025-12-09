@@ -12,13 +12,18 @@ require_once __DIR__ . '/config/links.php';
 $carritoModel = null;
 $detalleModel = null;
 $totalProductos = 0;
+$notifModel = null;
+$notifList = [];
+$notifCount = 0;
 
 if (isset($pdo) && ($pdo instanceof PDO)) {
     require_once __DIR__ . '/model/carrito_model.php';
     require_once __DIR__ . '/model/detalle_carrito_model.php';
+    require_once __DIR__ . '/model/NotificacionModel.php';
 
     $carritoModel = new CarritoModel($pdo);
     $detalleModel = new DetalleCarritoModel($pdo);
+    $notifModel = new NotificacionModel($pdo);
 
     if (isset($_SESSION['user_id_usuario'])) {
         $id_usuario = $_SESSION['user_id_usuario'];
@@ -27,6 +32,10 @@ if (isset($pdo) && ($pdo instanceof PDO)) {
         if ($carrito) {
             $totalProductos = $detalleModel->contarProductosUnicos($carrito['id_carrito']);
         }
+
+        // Notificaciones no leídas
+        $notifCount = $notifModel->contarNoLeidas($id_usuario);
+        $notifList = $notifModel->obtenerNoLeidas($id_usuario, 5);
     }
 } else {
     error_log('navbar.php: sin conexión a BD, se omiten consultas de carrito y categorías.');
@@ -213,6 +222,37 @@ if (isset($_SESSION['user_id_rol'])) {
             <?php endif; ?>
 
             <?php if ($isAuthenticated): ?>
+                <details class="relative">
+                    <summary class="flex cursor-pointer items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700">
+                        <i class="bi bi-bell"></i>
+                        <?php if ($notifCount > 0): ?>
+                            <span class="inline-flex min-w-[20px] justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white"><?php echo $notifCount; ?></span>
+                        <?php endif; ?>
+                    </summary>
+                    <div class="absolute right-0 mt-2 w-72 rounded-xl bg-white p-3 shadow-xl ring-1 ring-slate-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-semibold text-slate-800">Notificaciones</span>
+                            <?php if ($notifCount > 0): ?>
+                                <form action="<?= link_to('leer_notif', 'controller/marcar_notificaciones.php') ?>" method="POST">
+                                    <button type="submit" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Marcar como leídas</button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                        <?php if (empty($notifList)): ?>
+                            <p class="text-xs text-slate-500">Sin notificaciones nuevas.</p>
+                        <?php else: ?>
+                            <div class="space-y-2 max-h-64 overflow-y-auto">
+                                <?php foreach ($notifList as $n): ?>
+                                    <a href="<?= htmlspecialchars($n['link'] ?? '#'); ?>" class="block rounded-lg border border-slate-100 px-3 py-2 text-sm text-slate-700 hover:border-emerald-200 hover:bg-emerald-50/50">
+                                        <span class="block"><?= htmlspecialchars($n['mensaje']); ?></span>
+                                        <span class="text-xs text-slate-400"><?= htmlspecialchars($n['creada_en']); ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </details>
+
                 <a class="relative inline-flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= link_to('carrito', 'view/carritoview.php') ?>">
                     <i class="bi bi-cart3 text-lg"></i>
                     <?php if ($totalProductos > 0): ?>
@@ -328,6 +368,27 @@ if (isset($_SESSION['user_id_rol'])) {
             <?php endif; ?>
 
             <?php if ($isAuthenticated): ?>
+                <div class="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                    <i class="bi bi-bell"></i>
+                    <div class="flex-1">
+                        <?php if ($notifCount > 0): ?>
+                            <p class="text-sm text-slate-800">Tienes <?= $notifCount; ?> notificaciones nuevas.</p>
+                            <div class="text-xs text-slate-500 space-y-1 mt-1">
+                                <?php foreach ($notifList as $n): ?>
+                                    <div>
+                                        <a href="<?= htmlspecialchars($n['link'] ?? '#'); ?>" class="text-emerald-700 hover:underline"><?= htmlspecialchars($n['mensaje']); ?></a>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <form action="<?= link_to('leer_notif', 'controller/marcar_notificaciones.php') ?>" method="POST" class="mt-2">
+                                <button type="submit" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">Marcar como leídas</button>
+                            </form>
+                        <?php else: ?>
+                            <p class="text-xs text-slate-500">Sin notificaciones nuevas.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
                 <a class="relative inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= link_to('carrito', 'view/carritoview.php') ?>">
                     <i class="bi bi-cart3"></i>
                     <?php if ($totalProductos > 0): ?>

@@ -18,6 +18,20 @@
                 <div class="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
                     <i class="bi bi-check-circle me-2"></i> Contraseña cambiada correctamente.
                 </div>
+            <?php elseif (isset($_GET['error'])): ?>
+                <?php
+                    $msgMap = [
+                        'invalid' => 'Enlace inválido o ya usado.',
+                        'expired' => 'El enlace expiró. Solicita uno nuevo.',
+                        'save' => 'No se pudo guardar la nueva contraseña.',
+                        '1' => 'Las contraseñas no coinciden o no cumplen los requisitos.'
+                    ];
+                    $errKey = $_GET['error'];
+                    $msg = $msgMap[$errKey] ?? 'Ocurrió un problema. Intenta de nuevo.';
+                ?>
+                <div class="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                    <i class="bi bi-exclamation-triangle me-2"></i> <?= htmlspecialchars($msg); ?>
+                </div>
             <?php endif; ?>
 
             <form action="../controller/resetpasswordcontroller.php" method="POST" class="space-y-4">
@@ -47,3 +61,4 @@
     </div>
 </body>
 </html>
+
