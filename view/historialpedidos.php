@@ -9,8 +9,29 @@ if (!isset($_SESSION['user_id_usuario'])) {
 require_once '../config/database.php';
 $user_id_usuario = $_SESSION['user_id_usuario'];
 
-$stmt = $pdo->prepare('SELECT id_pedido, fecha, estado FROM pedidos WHERE id_usuario = ? ORDER BY fecha DESC');
-$stmt->execute([$user_id_usuario]);
+$estadoFiltro = $_GET['estado'] ?? '';
+$fechaDesde = $_GET['desde'] ?? '';
+$fechaHasta = $_GET['hasta'] ?? '';
+
+$sql = 'SELECT id_pedido, fecha, estado FROM pedidos WHERE id_usuario = :id_usuario';
+$params = [':id_usuario' => $user_id_usuario];
+
+if (!empty($estadoFiltro)) {
+    $sql .= ' AND estado = :estado';
+    $params[':estado'] = $estadoFiltro;
+}
+if (!empty($fechaDesde)) {
+    $sql .= ' AND fecha >= :desde';
+    $params[':desde'] = $fechaDesde;
+}
+if (!empty($fechaHasta)) {
+    $sql .= ' AND fecha <= :hasta';
+    $params[':hasta'] = $fechaHasta;
+}
+
+$sql .= ' ORDER BY fecha DESC';
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -28,6 +49,33 @@ $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="mx-auto max-w-6xl px-6 py-12">
         <h1 class="text-3xl font-bold text-slate-900 mb-8">Historial de Pedidos</h1>
+
+        <div class="rounded-2xl bg-white shadow-md ring-1 ring-slate-100 p-6 mb-8">
+            <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Estado</label>
+                    <select name="estado" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                        <option value="">Todos</option>
+                        <option value="pendiente" <?= $estadoFiltro === 'pendiente' ? 'selected' : ''; ?>>Pendiente</option>
+                        <option value="aprobado" <?= $estadoFiltro === 'aprobado' ? 'selected' : ''; ?>>Aprobado</option>
+                        <option value="cancelado" <?= $estadoFiltro === 'cancelado' ? 'selected' : ''; ?>>Cancelado</option>
+                        <option value="entregado" <?= $estadoFiltro === 'entregado' ? 'selected' : ''; ?>>Entregado</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Desde</label>
+                    <input type="date" name="desde" value="<?= htmlspecialchars($fechaDesde); ?>" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Hasta</label>
+                    <input type="date" name="hasta" value="<?= htmlspecialchars($fechaHasta); ?>" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="flex-1 rounded-xl bg-emerald-600 text-white px-4 py-2 text-sm font-semibold hover:bg-emerald-500">Filtrar</button>
+                    <a href="historialpedidos.php" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Limpiar</a>
+                </div>
+            </form>
+        </div>
 
         <?php if (count($pedidos) === 0): ?>
             <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8 text-center">

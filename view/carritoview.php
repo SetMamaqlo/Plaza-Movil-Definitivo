@@ -60,10 +60,6 @@ $error = $_GET['error'] ?? null;
             <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700">
                 <i class="bi bi-check-circle me-2"></i>Pedido generado. Paga en efectivo al recibirlo; queda pendiente hasta que el campesino lo gestione.
             </div>
-        <?php elseif ($error === 'pago_contado'): ?>
-            <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
-                <i class="bi bi-x-circle me-2"></i>Hubo un problema al crear tu pedido en efectivo. Intenta nuevamente.
-            </div>
         <?php elseif ($error === 'no_pedido'): ?>
             <div class="mb-6 p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-700">
                 <i class="bi bi-exclamation-triangle me-2"></i>No se recibio un pedido valido.
