@@ -7,6 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/links.php';
 
 $carritoModel = null;
 $detalleModel = null;
@@ -130,7 +131,7 @@ if (isset($_SESSION['user_id_rol'])) {
             <button id="navbar-toggle" class="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 focus:outline-none lg:hidden" type="button" aria-label="Abrir menú">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            <a class="flex items-center gap-3" href="<?= base_url() ?>/index.php">
+            <a class="flex items-center gap-3" href="<?= link_to('home', 'index.php') ?>">
                 <img src="<?= base_url()?>/img/logohorizontal.png" alt="Logo" class="h-10 w-auto">
                 <span class="hidden text-lg font-bold text-emerald-700 sm:inline">Plaza Móvil</span>
             </a>
@@ -153,7 +154,7 @@ if (isset($_SESSION['user_id_rol'])) {
                     <i class="bi bi-chevron-down ml-auto text-xs text-slate-500"></i>
                 </summary>
                 <div class="absolute top-full left-0 right-0 mt-2 w-full rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-200">
-                    <form method="GET" action="<?= base_url() ?>/index.php" class="space-y-4">
+                    <form method="GET" action="<?= link_to('home', 'index.php') ?>" class="space-y-4">
                         <!-- Búsqueda por texto -->
                         <div>
                             <label class="text-xs font-semibold text-slate-600">Buscar por nombre o descripción</label>
@@ -193,7 +194,7 @@ if (isset($_SESSION['user_id_rol'])) {
                             <button type="submit" class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500 focus:ring-2 focus:ring-emerald-200">
                                 <i class="bi bi-search"></i> Buscar
                             </button>
-                            <a href="<?= base_url() ?>/index.php" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                            <a href="<?= link_to('home', 'index.php') ?>" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                                 <i class="bi bi-arrow-counterclockwise"></i>
                             </a>
                         </div>
@@ -203,14 +204,14 @@ if (isset($_SESSION['user_id_rol'])) {
         </div>
 
         <div class="ml-auto hidden items-center gap-3 lg:flex">
-            <a class="text-sm font-semibold text-slate-700 transition hover:text-emerald-600" href="<?= base_url() ?>/index.php">Inicio</a>
-            <a class="text-sm font-semibold text-slate-700 transition hover:text-emerald-600" href="<?= base_url() ?>/view/quienes_somos.php">¿Quiénes Somos?</a>
+            <a class="text-sm font-semibold text-slate-700 transition hover:text-emerald-600" href="<?= link_to('home', 'index.php') ?>">Inicio</a>
+            <a class="text-sm font-semibold text-slate-700 transition hover:text-emerald-600" href="<?= link_to('quienes', 'view/quienes_somos.php') ?>">¿Quiénes Somos?</a>
 
             <?php if (isset($_SESSION['user_id_rol']) && $_SESSION['user_id_rol'] == 1): ?>
-                <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= base_url() ?>/view/dashboard.php">Dashboard</a>
+                <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= link_to('dashboard', 'view/dashboard.php') ?>">Dashboard</a>
             <?php endif; ?>
 
-            <a class="relative inline-flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= base_url() ?>/view/carritoview.php">
+            <a class="relative inline-flex items-center justify-center rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= link_to('carrito', 'view/carritoview.php') ?>">
                 <i class="bi bi-cart3 text-lg"></i>
                 <?php if ($totalProductos > 0): ?>
                     <span class="absolute -right-1 -top-1 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-xs font-semibold text-white"><?php echo $totalProductos; ?></span>
@@ -226,33 +227,33 @@ if (isset($_SESSION['user_id_rol'])) {
                     <i class="bi bi-chevron-down text-xs text-slate-500"></i>
                 </summary>
                 <div class="absolute right-0 mt-2 w-56 rounded-xl bg-white p-2 shadow-xl ring-1 ring-slate-200">
-                    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/perfil.php">
+                    <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('perfil', 'view/perfil.php') ?>">
                         <i class="bi bi-person"></i> Mi Perfil
                     </a>
                     <?php if (isset($_SESSION['user_id_rol']) && $_SESSION['user_id_rol'] == 3): ?>
-                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/pedidos_agricultor.php">
+                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('pedidos_ag', 'view/pedidos_agricultor.php') ?>">
                             <i class="bi bi-receipt"></i> Mis Pedidos
                         </a>
-                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/mis_productos.php">
+                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('mis_productos', 'view/mis_productos.php') ?>">
                             <i class="bi bi-basket"></i> Mis Productos
                         </a>
-                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/historial_ventas.php">
+                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('historial_ventas', 'view/historial_ventas.php') ?>">
                             <i class="bi bi-graph-up"></i> Historial de Ventas
                         </a>
-                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/carga_masiva.php">
+                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('carga_masiva', 'view/carga_masiva.php') ?>">
                             <i class="bi bi-upload"></i> Carga Masiva
                         </a>
                         <hr class="my-2 border-slate-100">
                     <?php endif; ?>
 
                     <?php if (isset($_SESSION['user_id_rol']) && $_SESSION['user_id_rol'] == 1): ?>
-                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/dashboard.php">
+                        <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('dashboard', 'view/dashboard.php') ?>">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                         <hr class="my-2 border-slate-100">
                     <?php endif; ?>
 
-                    <form action="<?= base_url() ?>/controller/logincontroller.php" method="POST">
+                    <form action="<?= link_to('logout', 'controller/logincontroller.php') ?>" method="POST">
                         <input type="hidden" name="action" value="logout">
                         <button type="submit" class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50">
                             <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
@@ -265,7 +266,7 @@ if (isset($_SESSION['user_id_rol'])) {
 
     <!-- Panel móvil de búsqueda y filtros -->
     <div id="navbar-mobile-panel" class="hidden border-t border-slate-100 bg-white/95 px-4 pb-4 pt-3 shadow-sm lg:hidden">
-        <form method="GET" action="<?= base_url() ?>/index.php" class="space-y-3">
+        <form method="GET" action="<?= link_to('home', 'index.php') ?>" class="space-y-3">
             <!-- Búsqueda por texto -->
             <div>
                 <label class="text-xs font-semibold text-slate-600">Buscar por nombre o descripción</label>
@@ -305,31 +306,31 @@ if (isset($_SESSION['user_id_rol'])) {
                 <button type="submit" class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500 focus:ring-2 focus:ring-emerald-200">
                     <i class="bi bi-search"></i> Buscar
                 </button>
-                <a href="<?= base_url() ?>/index.php" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                <a href="<?= link_to('home', 'index.php') ?>" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </a>
             </div>
         </form>
 
         <div class="mt-4 flex flex-wrap gap-2">
-            <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= base_url() ?>/index.php">Inicio</a>
-            <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= base_url() ?>/view/quienes_somos.php">¿Quiénes Somos?</a>
+            <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= link_to('home', 'index.php') ?>">Inicio</a>
+            <a class="rounded-full px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100" href="<?= link_to('quienes', 'view/quienes_somos.php') ?>">¿Quiénes Somos?</a>
 
             <?php if (isset($_SESSION['user_id_rol']) && $_SESSION['user_id_rol'] == 1): ?>
-                <a class="rounded-full bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100" href="<?= base_url() ?>/view/dashboard.php">Dashboard</a>
+                <a class="rounded-full bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-100" href="<?= link_to('dashboard', 'view/dashboard.php') ?>">Dashboard</a>
             <?php endif; ?>
 
-            <a class="relative inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= base_url() ?>/view/carritoview.php">
+            <a class="relative inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-700" href="<?= link_to('carrito', 'view/carritoview.php') ?>">
                 <i class="bi bi-cart3"></i>
                 <?php if ($totalProductos > 0): ?>
                     <span class="inline-flex items-center justify-center rounded-full bg-red-500 px-2 text-xs font-semibold text-white"><?php echo $totalProductos; ?></span>
                 <?php endif; ?>
             </a>
 
-            <a class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= base_url() ?>/view/perfil.php">
+            <a class="inline-flex items-center gap-2 rounded-full border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" href="<?= link_to('perfil', 'view/perfil.php') ?>">
                 <i class="bi bi-person"></i> Perfil
             </a>
-            <form action="<?= base_url() ?>/controller/logincontroller.php" method="POST" class="w-full">
+            <form action="<?= link_to('logout', 'controller/logincontroller.php') ?>" method="POST" class="w-full">
                 <input type="hidden" name="action" value="logout">
                 <button type="submit" class="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100">
                     <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
