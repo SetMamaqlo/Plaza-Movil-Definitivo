@@ -15,7 +15,8 @@ $LINKS = [
     'carga_masiva'    => 'view/carga_masiva.php',
     'login'      => 'view/login.php',
     'registro'   => 'view/register.php',
-    'logout'     => 'controller/logout.php',
+    // logout se maneja en logincontroller.php con action=logout
+    'logout'     => 'controller/logincontroller.php',
 ];
 
 function link_to(string $key, string $fallback = ''): string

@@ -51,10 +51,55 @@ if (!defined('APP_ENV_LOADED')) {
 }
 
 // Definir BASE_URL para construir rutas portables
+if (!function_exists('detectBaseUrl')) {
+    function detectBaseUrl(): string
+    {
+        $defaultLocal = 'http://localhost/Plaza-Movil-Definitivo';
+
+        // 1) Honrar BASE_URL si viene configurada y no es la de ejemplo local
+        $envBase = env('BASE_URL');
+        if (!empty($envBase)) {
+            $envBase = rtrim($envBase, '/');
+            if ($envBase !== rtrim($defaultLocal, '/')) {
+                return $envBase;
+            }
+        }
+
+        // 2) Variables que expone Render al contenedor (docker)
+        $renderUrl = env('RENDER_EXTERNAL_URL');
+        if (empty($renderUrl) && env('RENDER_EXTERNAL_HOSTNAME')) {
+            $renderUrl = 'https://' . env('RENDER_EXTERNAL_HOSTNAME');
+        }
+        if (!empty($renderUrl)) {
+            return rtrim($renderUrl, '/');
+        }
+
+        // 3) Reconstruir con los encabezados de la peticion
+        $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO']
+            ?? $_SERVER['REQUEST_SCHEME']
+            ?? ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http');
+
+        if (!empty($_SERVER['HTTP_HOST'])) {
+            $host = $_SERVER['HTTP_HOST'];
+            $scriptDir = '';
+            if (!empty($_SERVER['SCRIPT_NAME'])) {
+                $dir = trim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+                if ($dir && $dir !== '.') {
+                    $scriptDir = '/' . $dir;
+                }
+            }
+            return rtrim($scheme . '://' . $host . $scriptDir, '/');
+        }
+
+        // 4) Ultimo recurso: la ruta local usada en desarrollo
+        return rtrim($defaultLocal, '/');
+    }
+}
+
 if (!defined('BASE_URL')) {
-    $rawBase = env('BASE_URL', 'http://localhost/Plaza-Movil-Definitivo/');
-    $normalized = rtrim($rawBase, '/');
-    define('BASE_URL', $normalized);
+    define('BASE_URL', detectBaseUrl());
+    // Compatibilidad con codigo antiguo que revisa $_SERVER
+    $_SERVER['BASE_URL'] = BASE_URL;
 }
 
 if (!function_exists('base_url')) {

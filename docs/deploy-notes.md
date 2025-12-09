@@ -2,7 +2,7 @@
 
 ## Variables de entorno necesarias
 - `APP_ENV=production`
-- `BASE_URL=https://<tu-app>.onrender.com` (ajusta al dominio final)
+- `BASE_URL` es opcional: si no la pones, ahora se detecta de forma automatica (`RENDER_EXTERNAL_URL`/`RENDER_EXTERNAL_HOSTNAME` o los headers `X-Forwarded-Proto` + `Host`). Definela solo si usas un dominio personalizado.
 - Credenciales de BD (Railway): usa **DB_URL** completo o bien los pares individuales `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`.
 - (Opcional) `DEBUG_KEY` solo para usar `tools/inspect_error.php` temporalmente.
 

@@ -369,3 +369,8 @@ Stack trace:
 [03-Dec-2025 08:29:29 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
 [03-Dec-2025 08:29:31 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
 [03-Dec-2025 08:29:32 Europe/Berlin] ✅ Conectado a MySQL: 127.0.0.1:3306/agro_app
+[09-Dec-2025 06:10:29 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.3' (using password: YES)
+[09-Dec-2025 06:10:29 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 06:10:41 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.9' (using password: YES)
+[09-Dec-2025 06:10:41 Europe/Berlin] Error: conexión a la base de datos no disponible en index.php. Verifica config/database.php y las credenciales.
+[09-Dec-2025 14:21:58 Europe/Berlin] DB FAIL gondola.proxy.rlwy.net:34695/railway: SQLSTATE[HY000] [1045] Access denied for user 'root'@'100.64.0.4' (using password: YES)
