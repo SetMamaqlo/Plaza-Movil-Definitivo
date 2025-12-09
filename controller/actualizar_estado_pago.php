@@ -11,7 +11,7 @@ $id_pago = intval($_POST['id_pago']);
 $estado = $_POST['estado'];
 
 // Validar estado
-if (!in_array($estado, ['pendiente', 'completado'])) {
+if (!in_array($estado, ['pendiente', 'completado', 'cancelado'])) {
     header("Location: ../view/gestion_pagos.php?error=estado_invalido");
     exit;
 }

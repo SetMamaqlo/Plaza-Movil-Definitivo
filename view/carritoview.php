@@ -33,7 +33,8 @@ foreach ($productos as $producto) {
     $total += $producto['precio_unitario'] * $producto['cantidad'];
 }
 
-$pago = isset($_GET['pago']) ? $_GET['pago'] : null;
+$pedidoStatus = $_GET['pedido'] ?? null;
+$error = $_GET['error'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +43,7 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras - Plaza Móvil</title>
+    <title>Carrito de Compras - Plaza Movil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -55,17 +56,17 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
     <div style="height:70px"></div>
 
     <div class="mx-auto max-w-4xl px-6 py-12">
-        <?php if ($pago === 'exitoso'): ?>
+        <?php if ($pedidoStatus === 'creado'): ?>
             <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700">
-                <i class="bi bi-check-circle me-2"></i>¡Pago realizado con éxito! Tu pedido ha sido registrado.
+                <i class="bi bi-check-circle me-2"></i>Pedido generado. Paga en efectivo al recibirlo; queda pendiente hasta que el campesino lo gestione.
             </div>
-        <?php elseif ($pago === 'fallido'): ?>
+        <?php elseif ($error === 'pago_contado'): ?>
             <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
-                <i class="bi bi-x-circle me-2"></i>Hubo un problema con el pago. Intenta nuevamente.
+                <i class="bi bi-x-circle me-2"></i>Hubo un problema al crear tu pedido en efectivo. Intenta nuevamente.
             </div>
-        <?php elseif (isset($_GET['error']) && $_GET['error'] === 'no_pedido'): ?>
+        <?php elseif ($error === 'no_pedido'): ?>
             <div class="mb-6 p-4 rounded-xl bg-yellow-50 border border-yellow-200 text-yellow-700">
-                <i class="bi bi-exclamation-triangle me-2"></i>No se recibió un pedido válido.
+                <i class="bi bi-exclamation-triangle me-2"></i>No se recibio un pedido valido.
             </div>
         <?php endif; ?>
 
@@ -77,7 +78,7 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
         <?php if (empty($productos)): ?>
             <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-12 text-center">
                 <i class="bi bi-emoji-frown text-6xl text-slate-300 mb-4 block"></i>
-                <p class="text-lg text-slate-600 mb-6">Tu carrito está vacío.</p>
+                <p class="text-lg text-slate-600 mb-6">Tu carrito esta vacio.</p>
                 <a href="../index.php" class="inline-block rounded-xl bg-emerald-600 text-white font-semibold px-6 py-3 hover:bg-emerald-500 transition">
                     <i class="bi bi-arrow-left me-2"></i>Seguir comprando
                 </a>
@@ -120,7 +121,7 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
             <form action="../controller/crear_pedido.php" method="POST" class="mb-4">
                 <input type="hidden" name="id_carrito" value="<?php echo $carrito['id_carrito']; ?>">
                 <button type="submit" class="w-full rounded-xl bg-emerald-600 text-white font-bold py-4 text-lg hover:bg-emerald-500 transition shadow-lg">
-                    <i class="bi bi-credit-card me-2"></i>Comprar Ahora
+                    <i class="bi bi-cash me-2"></i>Confirmar pedido con pago en efectivo
                 </button>
             </form>
 
@@ -131,7 +132,7 @@ $pago = isset($_GET['pago']) ? $_GET['pago'] : null;
     </div>
 
     <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
-        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+        &copy; 2025 Plaza Movil. Todos los derechos reservados.
     </footer>
 </body>
 </html>

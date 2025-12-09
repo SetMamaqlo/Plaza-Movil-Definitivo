@@ -10,7 +10,7 @@ if (!isset($_SESSION['user_id_usuario'])) {
 }
 
 if (!isset($_GET['id_pedido'])) {
-    header("Location: carrito.php?error=no_pedido");
+    header("Location: carritoview.php?error=no_pedido");
     exit;
 }
 
@@ -27,7 +27,7 @@ $stmt->execute([$id_pedido, $id_usuario]);
 $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$pedido) {
-    header("Location: carrito.php?error=no_pedido");
+    header("Location: carritoview.php?error=no_pedido");
     exit;
 }
 
@@ -52,7 +52,7 @@ foreach ($detalles as $d) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pago del Pedido #<?php echo $id_pedido; ?></title>
+    <title>Pedido #<?php echo $id_pedido; ?> - Pago en efectivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -62,7 +62,7 @@ foreach ($detalles as $d) {
 
     <div class="mx-auto max-w-4xl px-6 py-12">
         <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
-            <h1 class="text-3xl font-bold text-slate-900 mb-2">Pago del Pedido #<?php echo $id_pedido; ?></h1>
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Pedido #<?php echo $id_pedido; ?> - Pago contra entrega</h1>
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                 <div class="rounded-lg bg-slate-50 p-4 border border-slate-200">
@@ -107,28 +107,35 @@ foreach ($detalles as $d) {
 
             <div class="flex justify-end mb-8">
                 <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-6 w-full sm:w-96">
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Total a Pagar</h3>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Total a pagar en efectivo</h3>
                     <p class="text-3xl font-bold text-emerald-600">$<?php echo number_format($total); ?></p>
                 </div>
             </div>
 
-            <form action="../controller/gestion_pagos.php" method="POST" class="space-y-4">
-                <input type="hidden" name="id_pedido" value="<?php echo $pedido['id_pedido']; ?>">
-                <input type="hidden" name="monto" value="<?php echo $total; ?>">
-                
-                <button type="submit" class="w-full rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
-                    <i class="bi bi-credit-card me-2"></i> Confirmar Pago
-                </button>
-            </form>
+            <div class="rounded-xl bg-blue-50 border border-blue-200 p-6 space-y-3">
+                <div class="flex items-start gap-3">
+                    <i class="bi bi-cash-coin text-2xl text-blue-700"></i>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Pago contra entrega</h3>
+                        <p class="text-sm text-slate-700">Este pedido queda <strong>pendiente</strong>. El campesino lo aprobará o cancelará, y cuando se entregue quedará marcado como entregado.</p>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-600">No necesitas pagar en línea. Ten el efectivo listo al momento de la entrega.</p>
+            </div>
 
-            <a href="carritoview.php" class="inline-block mt-4 rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-                <i class="bi bi-arrow-left me-2"></i> Volver al carrito
-            </a>
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <a href="historialpedidos.php" class="flex-1 text-center rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500">
+                    <i class="bi bi-clock-history me-2"></i> Ver historial y estado
+                </a>
+                <a href="carritoview.php" class="flex-1 text-center rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                    <i class="bi bi-arrow-left me-2"></i> Volver al carrito
+                </a>
+            </div>
         </div>
     </div>
 
     <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
-        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+        &copy; 2025 Plaza Movil. Todos los derechos reservados.
     </footer>
 </body>
 </html>

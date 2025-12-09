@@ -27,11 +27,21 @@ $stmt = $pdo->prepare('
 $stmt->execute([$id_pedido, $id_agricultor]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($result['tiene_productos'] > 0) {
+$estadosPermitidos = ['pendiente', 'aprobado', 'cancelado', 'entregado'];
+if ($result['tiene_productos'] > 0 && in_array($estado, $estadosPermitidos, true)) {
     // Actualizar estado del pedido
     $stmt = $pdo->prepare('UPDATE pedidos SET estado = ? WHERE id_pedido = ?');
     $stmt->execute([$estado, $id_pedido]);
-    
+
+    // Actualizar estado del pago asociado
+    $estadoPago = match ($estado) {
+        'entregado' => 'completado',
+        'cancelado' => 'cancelado',
+        default     => 'pendiente',
+    };
+    $pagoStmt = $pdo->prepare('UPDATE pagos SET estado = ? WHERE id_pedido = ?');
+    $pagoStmt->execute([$estadoPago, $id_pedido]);
+
     $_SESSION['success'] = 'Estado del pedido actualizado correctamente';
 } else {
     $_SESSION['error'] = 'No tienes permisos para modificar este pedido';

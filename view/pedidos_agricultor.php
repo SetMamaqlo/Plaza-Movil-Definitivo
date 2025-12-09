@@ -14,7 +14,7 @@ $id_usuario = $_SESSION['user_id_usuario'];
 $id_agricultor = $_SESSION['user_id_agricultor'] ?? null;
 
 if (!$id_agricultor) {
-    die("No se encontró agricultor asociado.");
+    die("No se encontro agricultor asociado.");
 }
 
 // Obtener pedidos del agricultor
@@ -35,24 +35,53 @@ $stmt = $pdo->prepare("
 $stmt->execute([$id_agricultor]);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Actualizar estado si lo envían
+// Actualizar estado si lo envian
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['nuevo_estado'])) {
     $id_pedido = intval($_POST['id_pedido']);
     $nuevo_estado = $_POST['nuevo_estado'];
-    
-    // Validar estados permitidos
-    if (!in_array($nuevo_estado, ['pendiente', 'aprobado', 'entregado'])) {
-        die("Estado no válido");
+
+    $estadosPermitidos = ['pendiente', 'aprobado', 'cancelado', 'entregado'];
+    if (!in_array($nuevo_estado, $estadosPermitidos, true)) {
+        die("Estado no valido");
     }
-    
+
+    // Confirmar que el agricultor tenga productos en este pedido
+    $permisoStmt = $pdo->prepare("
+        SELECT COUNT(*) AS tiene_productos
+        FROM pedido_detalle pd
+        INNER JOIN productos p ON pd.id_producto = p.id_producto
+        WHERE pd.id_pedido = ? AND p.id_agricultor = ?
+    ");
+    $permisoStmt->execute([$id_pedido, $id_agricultor]);
+    $tiene = (int) $permisoStmt->fetchColumn();
+
+    if ($tiene === 0) {
+        die("No tienes permisos para modificar este pedido.");
+    }
+
     try {
+        $pdo->beginTransaction();
+
         $updateStmt = $pdo->prepare("UPDATE pedidos SET estado = ? WHERE id_pedido = ?");
         $updateStmt->execute([$nuevo_estado, $id_pedido]);
-        
-        // Redirigir con éxito
+
+        // Sincronizar estado del pago en efectivo
+        $estadoPago = match ($nuevo_estado) {
+            'entregado' => 'completado',
+            'cancelado' => 'cancelado',
+            default     => 'pendiente',
+        };
+        $pagoStmt = $pdo->prepare("UPDATE pagos SET estado = ? WHERE id_pedido = ?");
+        $pagoStmt->execute([$estadoPago, $id_pedido]);
+
+        $pdo->commit();
+
         header("Location: pedidos_agricultor.php?success=1");
         exit;
     } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         error_log("Error al actualizar pedido: " . $e->getMessage());
     }
 }
@@ -62,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos - Agricultor - Plaza Móvil</title>
+    <title>Pedidos - Agricultor - Plaza Movil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -73,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
     <div class="mx-auto max-w-7xl px-6 py-12">
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-slate-900 mb-2">Pedidos para Entrega</h1>
-            <p class="text-slate-600">Gestiona los pedidos que tus clientes han realizado. Actualiza el estado de pendiente → aprobado → entregado</p>
+            <p class="text-slate-600">Gestiona los pedidos pendientes. Marca como aprobado o cancelado, y luego como entregado cuando completes la entrega.</p>
         </div>
 
         <?php if (isset($_GET['success'])): ?>
@@ -92,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
             </div>
         <?php else: ?>
             <!-- Resumen de estados -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="rounded-2xl bg-yellow-50 border border-yellow-200 p-6">
                     <div class="flex items-center justify-between">
                         <div>
@@ -128,6 +157,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                         <i class="bi bi-box-seam text-4xl text-green-400"></i>
                     </div>
                 </div>
+
+                <div class="rounded-2xl bg-red-50 border border-red-200 p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-red-700 mb-1">Cancelados</p>
+                            <p class="text-3xl font-bold text-red-800">
+                                <?php echo count(array_filter($pedidos, fn($p) => $p['estado'] === 'cancelado')); ?>
+                            </p>
+                        </div>
+                        <i class="bi bi-x-octagon text-4xl text-red-400"></i>
+                    </div>
+                </div>
             </div>
 
             <!-- Listado de pedidos -->
@@ -151,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                         </div>
 
                         <div class="p-6 space-y-4">
-                            <!-- Información del cliente -->
+                            <!-- Informacion del cliente -->
                             <div class="rounded-lg bg-slate-50 p-4 border border-slate-200">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
@@ -167,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                                         </p>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-semibold text-slate-700 mb-1">Teléfono</p>
+                                        <p class="text-sm font-semibold text-slate-700 mb-1">Telefono</p>
                                         <p class="text-slate-900">
                                             <a href="tel:<?= htmlspecialchars($pedido['telefono']); ?>" class="text-emerald-600 hover:text-emerald-700">
                                                 <?= htmlspecialchars($pedido['telefono']); ?>
@@ -196,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                                     <div class="flex items-center justify-between text-sm bg-slate-50 rounded-lg p-3">
                                         <div>
                                             <p class="font-semibold text-slate-900"><?= htmlspecialchars($prod['nombre']); ?></p>
-                                            <p class="text-slate-600">Cantidad: <?= $prod['cantidad']; ?> × $<?= number_format($prod['precio_unitario'], 2); ?></p>
+                                            <p class="text-slate-600">Cantidad: <?= $prod['cantidad']; ?> - $<?= number_format($prod['precio_unitario'], 2); ?></p>
                                         </div>
                                         <p class="font-bold text-emerald-600">$<?= number_format($prod['cantidad'] * $prod['precio_unitario'], 2); ?></p>
                                     </div>
@@ -213,12 +254,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                                         $estadoClases = [
                                             'pendiente' => 'bg-yellow-100 text-yellow-800',
                                             'aprobado' => 'bg-blue-100 text-blue-800',
-                                            'entregado' => 'bg-green-100 text-green-800'
+                                            'entregado' => 'bg-green-100 text-green-800',
+                                            'cancelado' => 'bg-red-100 text-red-800'
                                         ];
                                         $estadoIconos = [
                                             'pendiente' => 'hourglass-split',
                                             'aprobado' => 'check-circle',
-                                            'entregado' => 'box-seam'
+                                            'entregado' => 'box-seam',
+                                            'cancelado' => 'x-octagon'
                                         ];
                                         $clase = $estadoClases[$pedido['estado']] ?? 'bg-slate-100 text-slate-800';
                                         $icono = $estadoIconos[$pedido['estado']] ?? 'question-circle';
@@ -229,27 +272,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
                                     </div>
 
                                     <!-- Botones para cambiar estado -->
-                                    <?php if ($pedido['estado'] === 'pendiente'): ?>
-                                        <form method="POST" class="inline">
-                                            <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
-                                            <input type="hidden" name="nuevo_estado" value="aprobado">
-                                            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700">
-                                                <i class="bi bi-check-circle me-1"></i> Aprobar Pedido
-                                            </button>
-                                        </form>
-                                    <?php elseif ($pedido['estado'] === 'aprobado'): ?>
-                                        <form method="POST" class="inline">
-                                            <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
-                                            <input type="hidden" name="nuevo_estado" value="entregado">
-                                            <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700">
-                                                <i class="bi bi-box-seam me-1"></i> Marcar Entregado
-                                            </button>
-                                        </form>
-                                    <?php else: ?>
-                                        <span class="inline-flex items-center gap-2 rounded-xl bg-slate-100 text-slate-700 px-4 py-2 text-sm font-semibold">
-                                            <i class="bi bi-check-all me-1"></i> Completado
-                                        </span>
-                                    <?php endif; ?>
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <?php if ($pedido['estado'] === 'pendiente'): ?>
+                                            <form method="POST" class="inline">
+                                                <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
+                                                <input type="hidden" name="nuevo_estado" value="aprobado">
+                                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-blue-600 text-white px-4 py-2 text-sm font-semibold hover:bg-blue-700">
+                                                    <i class="bi bi-check-circle me-1"></i> Aprobar pedido
+                                                </button>
+                                            </form>
+                                            <form method="POST" class="inline">
+                                                <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
+                                                <input type="hidden" name="nuevo_estado" value="cancelado">
+                                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-red-600 text-white px-4 py-2 text-sm font-semibold hover:bg-red-700">
+                                                    <i class="bi bi-x-octagon me-1"></i> Cancelar
+                                                </button>
+                                            </form>
+                                        <?php elseif ($pedido['estado'] === 'aprobado'): ?>
+                                            <form method="POST" class="inline">
+                                                <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
+                                                <input type="hidden" name="nuevo_estado" value="entregado">
+                                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl bg-green-600 text-white px-4 py-2 text-sm font-semibold hover:bg-green-700">
+                                                    <i class="bi bi-box-seam me-1"></i> Marcar entregado
+                                                </button>
+                                            </form>
+                                            <form method="POST" class="inline">
+                                                <input type="hidden" name="id_pedido" value="<?= $pedido['id_pedido']; ?>">
+                                                <input type="hidden" name="nuevo_estado" value="cancelado">
+                                                <button type="submit" class="inline-flex items-center gap-2 rounded-xl border border-red-600 text-red-700 px-4 py-2 text-sm font-semibold hover:bg-red-50">
+                                                    <i class="bi bi-x-octagon me-1"></i> Cancelar
+                                                </button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span class="inline-flex items-center gap-2 rounded-xl bg-slate-100 text-slate-700 px-4 py-2 text-sm font-semibold">
+                                                <i class="bi bi-check-all me-1"></i> Gestion finalizada
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -260,7 +319,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_pedido'], $_POST['
     </div>
 
     <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
-        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+        &copy; 2025 Plaza Movil. Todos los derechos reservados.
     </footer>
 </body>
 </html>

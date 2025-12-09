@@ -86,7 +86,14 @@ $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center">
-                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $pago['estado'] === 'completado' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
+                                        <?php
+                                        $estadoClase = match ($pago['estado']) {
+                                            'completado' => 'bg-green-100 text-green-800',
+                                            'cancelado' => 'bg-red-100 text-red-800',
+                                            default => 'bg-yellow-100 text-yellow-800',
+                                        };
+                                        ?>
+                                        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold <?= $estadoClase; ?>">
                                             <?= ucfirst(htmlspecialchars($pago['estado'])); ?>
                                         </span>
                                     </td>
@@ -100,7 +107,7 @@ $pagos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                 </button>
                                             </form>
                                         <?php else: ?>
-                                            <span class="text-xs text-slate-500"><i class="bi bi-check-all me-1"></i>Completado</span>
+                                            <span class="text-xs text-slate-500"><i class="bi bi-check-all me-1"></i><?= ucfirst(htmlspecialchars($pago['estado'])); ?></span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

@@ -17,7 +17,7 @@ $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $id_pedido = $_GET['id_pedido'] ?? null;
 if (!$id_pedido && !$pedido) {
-    die("No se recibió un pedido válido.");
+    die("No se recibio un pedido valido.");
 }
 
 $id_pedido = $pedido['id_pedido'] ?? $id_pedido;
@@ -35,13 +35,16 @@ $total = 0;
 foreach ($productos as $prod) {
     $total += $prod['cantidad'] * $prod['precio_unitario'];
 }
+
+$pedidoStatus = $_GET['pedido'] ?? null;
+$error = $_GET['error'] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación del Pedido - Plaza Móvil</title>
+    <title>Confirmacion del Pedido - Plaza Movil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -51,21 +54,23 @@ foreach ($productos as $prod) {
 
     <div class="mx-auto max-w-2xl px-6 py-12">
         <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
-            <h1 class="text-3xl font-bold text-center text-emerald-700 mb-8">Confirmar Pedido</h1>
+            <h1 class="text-3xl font-bold text-center text-emerald-700 mb-8">Resumen del pedido</h1>
 
-            <?php if (isset($_GET['pago'])): ?>
-                <?php if ($_GET['pago'] === 'exitoso'): ?>
-                    <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700">
-                        <i class="bi bi-check-circle me-2"></i> ¡Pedido confirmado! Se ha programado entrega en efectivo.
-                    </div>
-                <?php endif; ?>
+            <?php if ($pedidoStatus === 'creado'): ?>
+                <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 text-green-700">
+                    <i class="bi bi-check-circle me-2"></i> Pedido creado. Queda pendiente hasta que el campesino lo apruebe o cancele.
+                </div>
+            <?php elseif ($error === 'no_pedido'): ?>
+                <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700">
+                    <i class="bi bi-x-circle me-2"></i> No se encontro un pedido valido.
+                </div>
             <?php endif; ?>
 
             <div class="mb-8">
                 <p class="text-sm text-slate-600 mb-2"><strong>Pedido ID:</strong> <?= $id_pedido ?></p>
             </div>
 
-            <h2 class="text-xl font-bold text-slate-900 mb-4">Resumen del Pedido</h2>
+            <h2 class="text-xl font-bold text-slate-900 mb-4">Productos</h2>
             
             <div class="overflow-x-auto mb-8">
                 <table class="w-full text-sm">
@@ -90,38 +95,31 @@ foreach ($productos as $prod) {
                 </table>
             </div>
 
-            <div class="flex justify-end mb-8">
+            <div class="flex justify-end mb-6">
                 <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-6 w-full sm:w-96">
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Total a Pagar</h3>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Total a pagar en efectivo</h3>
                     <p class="text-3xl font-bold text-emerald-600">$<?= number_format($total, 2) ?></p>
                 </div>
             </div>
 
-            <!-- Información de pago en efectivo -->
             <div class="rounded-xl bg-blue-50 border border-blue-200 p-6 mb-6">
                 <div class="flex items-start gap-3">
-                    <i class="bi bi-info-circle text-xl text-blue-600 mt-1"></i>
+                    <i class="bi bi-cash-coin text-xl text-blue-600 mt-1"></i>
                     <div>
-                        <h4 class="font-bold text-blue-900 mb-2">Método de Pago: Efectivo</h4>
+                        <h4 class="font-bold text-blue-900 mb-2">Pago contra entrega</h4>
                         <ul class="text-sm text-blue-800 space-y-1">
-                            <li><i class="bi bi-check-circle me-2"></i>Deberás pagar en efectivo al momento de la entrega</li>
-                            <li><i class="bi bi-check-circle me-2"></i>El dinero se recibe directamente del agricultor</li>
-                            <li><i class="bi bi-check-circle me-2"></i>Tu pedido está pendiente de confirmación de entrega</li>
+                            <li><i class="bi bi-check-circle me-2"></i>Paga en efectivo al recibir el pedido.</li>
+                            <li><i class="bi bi-check-circle me-2"></i>El campesino lo aprobará o cancelará.</li>
+                            <li><i class="bi bi-check-circle me-2"></i>Cuando se entregue, quedará marcado como entregado.</li>
                         </ul>
                     </div>
                 </div>
             </div>
 
-            <form action="../controller/confirmar_pedido_efectivo.php" method="POST" class="space-y-4">
-                <input type="hidden" name="id_pedido" value="<?= $id_pedido ?>">
-                <input type="hidden" name="monto_total" value="<?= $total ?>">
-
-                <button type="submit" class="w-full rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
-                    <i class="bi bi-check-circle me-2"></i> Confirmar Pedido en Efectivo
-                </button>
-            </form>
-
-            <div class="mt-4 flex gap-2">
+            <div class="mt-4 flex gap-2 flex-wrap">
+                <a href="historialpedidos.php" class="flex-1 text-center rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-500 shadow-md">
+                    <i class="bi bi-clock-history me-2"></i> Ver historial
+                </a>
                 <a href="carritoview.php" class="flex-1 text-center rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                     <i class="bi bi-arrow-left me-2"></i> Volver al carrito
                 </a>
@@ -130,7 +128,7 @@ foreach ($productos as $prod) {
     </div>
 
     <footer class="mt-14 bg-white py-6 text-center text-sm text-slate-500 shadow-inner">
-        &copy; 2025 Plaza Móvil. Todos los derechos reservados.
+        &copy; 2025 Plaza Movil. Todos los derechos reservados.
     </footer>
 </body>
 </html>

@@ -11,11 +11,6 @@ if (!isset($pdo) || !($pdo instanceof PDO)) {
     exit;
 }
 
-if (!isset($_SESSION['user_id_rol'])) {
-    header("Location: " . base_url("view/login.php"));
-    exit;
-}
-
 $id_categoria   = isset($_GET['id_categoria']) ? (int) $_GET['id_categoria'] : null;
 $busqueda       = $_GET['busqueda'] ?? '';
 $categoria_filtro = $_GET['categoria_filtro'] ?? '';

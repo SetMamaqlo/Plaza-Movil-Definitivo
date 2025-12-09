@@ -49,8 +49,8 @@ require_once __DIR__ . '/../config/session_timeout.php';
                         <select name="estado" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
                             <option value="">Todos los estados</option>
                             <option value="pendiente">Pendiente</option>
-                            <option value="confirmado">Confirmado</option>
-                            <option value="completado">Completado</option>
+                            <option value="aprobado">Aprobado</option>
+                            <option value="entregado">Entregado</option>
                             <option value="cancelado">Cancelado</option>
                         </select>
                     </div>
@@ -156,8 +156,9 @@ require_once __DIR__ . '/../config/session_timeout.php';
                                     </button>
                                     <div class="hidden group-hover:block absolute bg-white shadow-lg rounded-lg p-2 space-y-1 z-10">
                                         <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=pendiente" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Pendiente</a>
-                                        <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=confirmado" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Confirmado</a>
-                                        <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=completado" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Completado</a>
+                                        <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=aprobado" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Aprobado</a>
+                                        <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=entregado" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Entregado</a>
+                                        <a href="../controller/actualizar_estado_pedido.php?id_pedido=<?= $pedido['id_pedido']; ?>&estado=cancelado" class="block px-4 py-2 text-sm hover:bg-slate-100 rounded">Cancelado</a>
                                     </div>
                                 </div>
                             </div>

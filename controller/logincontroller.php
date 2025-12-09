@@ -10,6 +10,13 @@ if (
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
+    $userId = $_SESSION['user_id_usuario'] ?? null;
+    if ($userId) {
+        $tokenFile = __DIR__ . '/../storage/session_tokens/user_' . (int)$userId . '.token';
+        if (is_file($tokenFile)) {
+            @unlink($tokenFile);
+        }
+    }
     session_unset();
     session_destroy();
     header('Location: ' . base_url('view/login.php'));
@@ -20,8 +27,6 @@ if (
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-
 
 class LoginController {
     private $model;
@@ -46,24 +51,43 @@ class LoginController {
 
             if ($user && password_verify($password, $user['password'])) {
                 // Guardar datos básicos en sesión
+                session_regenerate_id(true);
                 $_SESSION['user_id_usuario'] = (int)$user['id_usuario'];
                 $_SESSION['user_name'] = $user['username'];
                 $_SESSION['user_id_rol'] = (int)$user['id_rol'];
                 if (!empty($user['id_agricultor'])) {
                     $_SESSION['user_id_agricultor'] = (int)$user['id_agricultor'];
                 }
+                $_SESSION['ultimo_acceso'] = time();
+
+                // Token de sesión única
+                $token = bin2hex(random_bytes(32));
+                $_SESSION['session_token'] = $token;
+                $tokenDir = __DIR__ . '/../storage/session_tokens';
+                if (!is_dir($tokenDir)) {
+                    @mkdir($tokenDir, 0777, true);
+                }
+                file_put_contents($tokenDir . '/user_' . (int)$user['id_usuario'] . '.token', $token);
+
                 // Redirección única
                 header("Location: " . base_url('index.php'));
                 exit;
             } else {
                 // Error de login
-                  header('Location: ' . base_url('view/login.php?error=Credenciales%20incorrectas'));
+                header('Location: ' . base_url('view/login.php?error=Credenciales%20incorrectas'));
                 exit;
             }
         }
     }
 
     public function logout() {
+        $userId = $_SESSION['user_id_usuario'] ?? null;
+        if ($userId) {
+            $tokenFile = __DIR__ . '/../storage/session_tokens/user_' . (int)$userId . '.token';
+            if (is_file($tokenFile)) {
+                @unlink($tokenFile);
+            }
+        }
         session_unset();
         session_destroy();
         header('Location: ' . base_url('view/login.php'));
