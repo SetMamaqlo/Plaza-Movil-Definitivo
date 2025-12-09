@@ -13,7 +13,7 @@
     <div class="w-full max-w-md">
         <div class="bg-white rounded-2xl shadow-2xl ring-1 ring-slate-100 p-8">
             <div class="text-center mb-8">
-                <img src="../img/logoplazamovil.png" alt="Logo Plaza Móvil" class="h-16 w-auto mx-auto mb-4">
+                <img src="../img/Logoplazamovil.png" alt="Logo Plaza Móvil" class="h-16 w-auto mx-auto mb-4">
                 <h1 class="text-3xl font-bold text-slate-900">Iniciar Sesión</h1>
             </div>
 

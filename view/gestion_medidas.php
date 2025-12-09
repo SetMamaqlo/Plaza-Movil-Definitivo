@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
+require_once '../config/database.php';
 require_once '../controller/medidas_controller.php';
-
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -13,6 +13,10 @@ if ($id_rol !== 1) {
     header("Location: " . base_url() . "/index.php");
     exit;
 }
+
+// Obtener listado de medidas (evita depender de require_once previo)
+$medidasController = new MedidasController($pdo);
+$medidas = $medidasController->index();
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +35,7 @@ if ($id_rol !== 1) {
     <div class="mx-auto max-w-6xl px-6 py-12">
         <div class="rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 p-8">
             <div class="flex justify-between items-center mb-8">
-                <h1 class="text-3xl font-bold text-slate-900">GestiÃ³n de Unidades de Medida</h1>
+                <h1 class="text-3xl font-bold text-slate-900 flex items-center gap-2"><i class="bi bi-scale"></i> Gestión de Unidades de Medida</h1>
                 <button type="button" onclick="document.getElementById('crearMedidaModal').classList.remove('hidden')" 
                         class="rounded-xl bg-emerald-600 text-white px-6 py-2 font-semibold hover:bg-emerald-500">
                     <i class="bi bi-plus-circle me-2"></i>Crear Unidad
@@ -118,3 +122,6 @@ if ($id_rol !== 1) {
     </footer>
 </body>
 </html>
+
+
+

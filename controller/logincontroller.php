@@ -19,7 +19,7 @@ if (
     }
     session_unset();
     session_destroy();
-    header('Location: ' . base_url('view/login.php'));
+    header('Location: ' . base_url('index.php?logout_reason=manual'));
     exit;
 }
 
@@ -90,7 +90,7 @@ class LoginController {
         }
         session_unset();
         session_destroy();
-        header('Location: ' . base_url('view/login.php'));
+        header('Location: ' . base_url('index.php?logout_reason=manual'));
         exit;
     }
 }

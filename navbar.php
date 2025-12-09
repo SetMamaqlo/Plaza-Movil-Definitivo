@@ -135,6 +135,36 @@ if (isset($_SESSION['user_id_rol'])) {
     </script>
 <?php endif; ?>
 
+<?php
+$logoutReason = $_GET['logout_reason'] ?? null;
+if ($logoutReason):
+    $logoutMessages = [
+        'manual' => 'Sesión cerrada correctamente.',
+        'timeout' => 'Sesión cerrada por inactividad.',
+        'revoked' => 'Sesión cerrada porque se inició en otro dispositivo o navegador.'
+    ];
+    $logoutText = $logoutMessages[$logoutReason] ?? 'Sesión finalizada.';
+?>
+    <div id="toastLogout" class="fixed top-20 right-6 z-50 bg-white text-slate-800 rounded-xl shadow-2xl ring-1 ring-slate-200 p-4 flex items-center gap-3 max-w-sm">
+        <i class="bi bi-info-circle text-emerald-600 text-xl flex-shrink-0"></i>
+        <div class="flex-1">
+            <p class="font-semibold">Sesión cerrada</p>
+            <p class="text-sm text-slate-600"><?= htmlspecialchars($logoutText); ?></p>
+        </div>
+        <button onclick="document.getElementById('toastLogout').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toast = document.getElementById('toastLogout');
+            if (toast) {
+                setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+        });
+    </script>
+<?php endif; ?>
+
 <nav class="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
     <div class="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <div class="flex items-center gap-3">
@@ -502,3 +532,4 @@ if (isset($_SESSION['user_id_rol'])) {
         });
     }
 </script>
+

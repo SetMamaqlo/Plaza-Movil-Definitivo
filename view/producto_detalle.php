@@ -44,8 +44,13 @@ $stmt = $pdo->prepare("SELECT id_agricultor FROM productos WHERE id_producto = ?
 $stmt->execute([$id_producto]);
 $id_agricultor = $stmt->fetchColumn();
 $calificacion = ResenaModel::promedioAgricultor($id_agricultor);
+$isLogged = isset($_SESSION['user_id_usuario']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['estrellas'], $_POST['comentario'])) {
+    if (!$isLogged) {
+        header("Location: " . base_url('view/login.php?redirect=' . urlencode('view/producto_detalle.php?id_producto=' . $id_producto)));
+        exit;
+    }
     $estrellas = (int)$_POST['estrellas'];
     $comentario = trim($_POST['comentario']);
     $id_usuario = $_SESSION['user_id_usuario'];
@@ -99,12 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['estrellas'], $_POST['
                     </div>
                 </div>
 
-                <!-- BotÃ³n Comprar -->
-                <form action="../controller/carritocontroller.php" method="POST">
-                    <input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
-                    <button type="submit" class="w-full rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
-                        <i class="bi bi-cart-plus me-2"></i> AÃ±adir al Carrito
-                    </button>
+                <!-- Botón Comprar -->
+                <?php if ($isLogged): ?>
+                    <form action="../controller/carritocontroller.php" method="POST">
+                        <input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
+                        <button type="submit" class="w-full rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
+                            <i class="bi bi-cart-plus me-2"></i> Añadir al Carrito
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <a href="<?= base_url('view/login.php?redirect='. urlencode('view/producto_detalle.php?id_producto='.$id_producto)); ?>" class="block w-full text-center rounded-xl bg-emerald-600 px-6 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-500">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Inicia sesión para comprar
+                    </a>
+                <?php endif; ?>
                 </form>
             </div>
         </div>
@@ -142,34 +154,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['estrellas'], $_POST['
                 <?php endif; ?>
             </div>
 
-            <!-- Formulario dejar reseÃ±a -->
+            <!-- Formulario dejar reseña -->
             <div class="bg-white rounded-2xl shadow-lg ring-1 ring-slate-100 p-6">
-                <h3 class="text-xl font-bold text-slate-900 mb-4">Deja tu reseÃ±a</h3>
-                <form method="POST" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">PuntuaciÃ³n:</label>
-                        <div class="flex gap-2">
-                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <input type="radio" id="star<?= $i ?>" name="estrellas" value="<?= $i ?>" required class="hidden">
-                                <label for="star<?= $i ?>" class="cursor-pointer text-3xl text-slate-300 hover:text-amber-400 transition">
-                                    <i class="bi bi-star-fill"></i>
-                                </label>
-                            <?php endfor; ?>
+                <h3 class="text-xl font-bold text-slate-900 mb-4">Deja tu reseña</h3>
+                <?php if ($isLogged): ?>
+                    <form method="POST" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Puntuación:</label>
+                            <div class="flex gap-2">
+                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <input type="radio" id="star<?= $i ?>" name="estrellas" value="<?= $i ?>" required class="hidden">
+                                    <label for="star<?= $i ?>" class="cursor-pointer text-3xl text-slate-300 hover:text-amber-400 transition">
+                                        <i class="bi bi-star-fill"></i>
+                                    </label>
+                                <?php endfor; ?>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Comentario:</label>
-                        <textarea name="comentario" maxlength="250" required 
-                                  class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
-                                  rows="4" placeholder="Comparte tu experiencia..."></textarea>
-                    </div>
-                    <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
-                        Enviar reseÃ±a
-                    </button>
-                </form>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Comentario:</label>
+                            <textarea name="comentario" maxlength="250" required 
+                                      class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100"
+                                      rows="4" placeholder="Comparte tu experiencia..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
+                            Enviar reseña
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <a href="<?= base_url('view/login.php?redirect='. urlencode('view/producto_detalle.php?id_producto='.$id_producto)); ?>" class="block w-full text-center rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-500">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Inicia sesión para dejar una reseña
+                    </a>
+                <?php endif; ?>
             </div>
-        </div>
-
         <!-- Modal todas las reseÃ±as -->
         <div id="todasResenas" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur">
             <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl max-h-screen overflow-y-auto">

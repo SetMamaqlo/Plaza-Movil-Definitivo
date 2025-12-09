@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id_usuario'])) {
     if (!$currentToken || !$storedToken || !hash_equals($storedToken, $currentToken)) {
         session_unset();
         session_destroy();
-        header('Location: ' . base_url('view/login.php?session_revoked=1'));
+        header('Location: ' . base_url('index.php?logout_reason=revoked'));
         exit;
     }
 
@@ -38,8 +38,8 @@ if (isset($_SESSION['user_id_usuario'])) {
         session_unset();
         session_destroy();
 
-        // Redirigir al login usando la base detectada (Render/local)
-        header('Location: ' . base_url('view/login.php?timeout=1'));
+        // Redirigir al index indicando causa
+        header('Location: ' . base_url('index.php?logout_reason=timeout'));
         exit;
     }
 

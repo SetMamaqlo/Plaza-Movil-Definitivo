@@ -106,18 +106,9 @@ $deleted = isset($_GET['deleted']) && $_GET['deleted'] == 1;
                                 <td class="px-4 py-3"><?= htmlspecialchars($usuario['id_usuario']); ?></td>
                                 <td class="px-4 py-3"><?= htmlspecialchars($usuario['nombre_completo']); ?></td>
                                 <td class="px-4 py-3"><?= htmlspecialchars($usuario['email']); ?></td>
-                                <td class="px-4 py-3">
-                                    <form action="../controller/editar_usuario.php" method="POST" class="inline">
-                                        <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario']; ?>">
-                                        <select name="rol" class="rounded-lg border border-slate-200 px-3 py-1 text-sm" onchange="this.form.submit()">
-                                            <option value="1" <?= $usuario['id_rol'] == 1 ? 'selected' : ''; ?>>Administrador</option>
-                                            <option value="2" <?= $usuario['id_rol'] == 2 ? 'selected' : ''; ?>>Vendedor</option>
-                                            <option value="3" <?= $usuario['id_rol'] == 3 ? 'selected' : ''; ?>>Comprador</option>
-                                        </select>
-                                    </form>
-                                </td>
+                                <td class="px-4 py-3"><?= $usuario['id_rol'] == 1 ? 'Administrador' : ($usuario['id_rol'] == 2 ? 'Vendedor' : 'Comprador'); ?></td>
                                 <td class="px-4 py-3 text-center space-x-2">
-                                    <button type="button" onclick="editarModal<?= $usuario['id_usuario']; ?>()" class="rounded-lg bg-amber-500 text-white px-3 py-1 text-xs font-semibold hover:bg-amber-600">
+                                    <button type="button" onclick="document.getElementById('modalEditar<?= $usuario['id_usuario']; ?>').classList.remove('hidden')" class="rounded-lg bg-amber-500 text-white px-3 py-1 text-xs font-semibold hover:bg-amber-600">
                                         <i class="bi bi-pencil"></i>Editar
                                     </button>
                                     <form action="../controller/eliminar_usuario.php" method="POST" class="inline">
@@ -128,6 +119,39 @@ $deleted = isset($_GET['deleted']) && $_GET['deleted'] == 1;
                                     </form>
                                 </td>
                             </tr>
+
+                            <!-- Modal editar usuario -->
+                            <div id="modalEditar<?= $usuario['id_usuario']; ?>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur" onclick="if(event.target === this) this.classList.add('hidden')">
+                                <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md max-h-screen overflow-y-auto">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="text-xl font-bold text-slate-900">Editar Usuario</h3>
+                                        <button onclick="document.getElementById('modalEditar<?= $usuario['id_usuario']; ?>').classList.add('hidden')" class="text-slate-500 hover:text-slate-700 text-2xl">&times;</button>
+                                    </div>
+                                    <form action="../controller/editar_usuario.php" method="POST" class="space-y-4">
+                                        <input type="hidden" name="id_usuario" value="<?= $usuario['id_usuario']; ?>">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-slate-700 mb-2">Nombre Completo</label>
+                                            <input type="text" name="nombre_completo" value="<?= htmlspecialchars($usuario['nombre_completo']); ?>" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
+                                            <input type="email" name="email" value="<?= htmlspecialchars($usuario['email']); ?>" required class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-slate-700 mb-2">Rol</label>
+                                            <select name="rol" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100">
+                                                <option value="1" <?= $usuario['id_rol'] == 1 ? 'selected' : ''; ?>>Administrador</option>
+                                                <option value="2" <?= $usuario['id_rol'] == 2 ? 'selected' : ''; ?>>Vendedor</option>
+                                                <option value="3" <?= $usuario['id_rol'] == 3 ? 'selected' : ''; ?>>Comprador</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <button type="button" onclick="document.getElementById('modalEditar<?= $usuario['id_usuario']; ?>').classList.add('hidden')" class="flex-1 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancelar</button>
+                                            <button type="submit" class="flex-1 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">Guardar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

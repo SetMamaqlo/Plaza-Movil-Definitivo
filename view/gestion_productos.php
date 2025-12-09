@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/app.php';
 require_once '../config/database.php';
-require_once '../controller/medidas_controller.php';
-require_once '../controller/gestion_categorias.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -16,6 +14,7 @@ if ($id_rol !== 1) {
     exit;
 }
 
+// Listado de productos
 $stmt = $pdo->prepare("
     SELECT p.*, c.nombre AS categoria, u.nombre AS unidades_de_medida, agr.nombre_completo AS agricultor
     FROM productos p
@@ -27,6 +26,10 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute();
 $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Categorías para el selector
+$catStmt = $pdo->query("SELECT id_categoria, nombre FROM categoria ORDER BY nombre ASC");
+$categorias = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

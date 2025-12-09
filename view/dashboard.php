@@ -107,20 +107,6 @@ if ($id_rol !== 1) {
                 </div>
             </a>
 
-            <!-- Gestión de Pagos -->
-            <a href="gestion_pagos.php"
-               class="group rounded-2xl bg-white shadow-lg ring-1 ring-slate-100 overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
-                <div class="bg-gradient-to-br from-purple-400 to-purple-600 p-6 text-white">
-                    <i class="bi bi-credit-card text-4xl mb-2 block"></i>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Gestión de Pagos</h3>
-                    <p class="text-sm text-slate-600 mb-4">Visualiza y gestiona todos los pagos del sistema.</p>
-                    <span class="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 group-hover:gap-3 transition">
-                        Ir <i class="bi bi-arrow-right"></i>
-                    </span>
-                </div>
-            </a>
         </div>
     </div>
 
